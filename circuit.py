@@ -130,3 +130,47 @@ def inverter(vin, vout, vdd, gnd):
     vdd.connect(q_p['S'])
     gnd.connect(q_n['S'])
     vout.connect(q_p['D'], q_n['D'])
+
+
+# ---- Board assemblies ----------------------------------------------------
+
+
+def _signal_nets():
+    """The 12 gate-signal nets, keyed by name."""
+    sig = {}
+    for n in range(1, 5):
+        for p in ("A", "B", "Y"):
+            name = f"NAND_{n}_{p}"
+            sig[name] = Net(name)
+    return sig
+
+
+def _bulk_cap(vdd, gnd):
+    c1 = Part("Device", "C", ref="C1", value=BULK_C, footprint=FP_CAP)
+    vdd += c1[1]
+    gnd += c1[2]
+    return c1
+
+
+def assemble_nand_module():
+    """4x nand_gate + bulk cap + bus headers. Operates on the default circuit."""
+    vdd, gnd = Net("VDD"), Net("GND")
+    vdd.drive = POWER
+    gnd.drive = POWER
+    sig = _signal_nets()
+    nets = {"VDD": vdd, "GND": gnd, **sig}
+
+    for n in range(1, 5):
+        nand_gate(
+            f"NAND_{n}",
+            sig[f"NAND_{n}_A"], sig[f"NAND_{n}_B"], sig[f"NAND_{n}_Y"],
+            vdd, gnd,
+        )
+
+    _bulk_cap(vdd, gnd)
+    add_bus_headers(nets)
+
+
+def build_nand_module():
+    assemble_nand_module()
+    generate_netlist(file_="nand_module.net", do_backup=False)

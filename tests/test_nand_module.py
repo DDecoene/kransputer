@@ -1,3 +1,5 @@
+import re
+
 import circuit
 from skidl import Net
 from helpers import circuit as active_circuit, net_by_name, pins_named, pins_numbered
@@ -70,4 +72,5 @@ def test_build_nand_module_writes_netlist(tmp_path, monkeypatch):
     circuit.build_nand_module()
     out = tmp_path / "nand_module.net"
     assert out.exists()
-    assert out.read_text().count("(comp ") == 19   # 16 FET + C1 + J1 + J2
+    comps = re.findall(r"\(comp\s", out.read_text())
+    assert len(comps) == 19   # 16 FET + C1 + J1 + J2
