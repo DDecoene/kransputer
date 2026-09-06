@@ -24,3 +24,7 @@ fp-info-cache
 ~*.lck
 _autosave-*
 *.bak
+
+# Fab output (regenerate with kicad-cli)
+*/fab/
+*_fab.zip
