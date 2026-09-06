@@ -68,3 +68,65 @@ def add_bus_headers(nets):
     for k, name in enumerate(BUS, start=1):
         nets[name] += j1[k], j2[k]
     return j1, j2
+
+
+# ---- Gate subcircuits ----------------------------------------------------
+
+
+@subcircuit
+def nand_gate(inst, a, b, y, vdd, gnd):
+    """Discrete static-CMOS 2-input NAND.
+
+    `inst` (e.g. "NAND_1") prefixes the four transistor refs. Pull-up is two
+    BSS84 in parallel; pull-down is two BSS138 in series through an internal
+    node `<inst>_MID`.
+    """
+    qpa = Part("Transistor_FET", "BSS84",  ref=f"{inst}_QPA", footprint=FP_SOT23)
+    qpb = Part("Transistor_FET", "BSS84",  ref=f"{inst}_QPB", footprint=FP_SOT23)
+    qna = Part("Transistor_FET", "BSS138", ref=f"{inst}_QNA", footprint=FP_SOT23)
+    qnb = Part("Transistor_FET", "BSS138", ref=f"{inst}_QNB", footprint=FP_SOT23)
+    mid = Net(f"{inst}_MID")
+
+    a   += qpa["G"], qna["G"]
+    b   += qpb["G"], qnb["G"]
+    vdd += qpa["S"], qpb["S"]
+    y   += qpa["D"], qpb["D"], qna["D"]
+    mid += qna["S"], qnb["D"]
+    gnd += qnb["S"]
+
+
+# Preserved from baseline commit bf6a3a1 for the future NOR / NOT module specs.
+# These still use the pre-bus-module signature (va, vb, vout, ...) and no
+# semantic refs; rewrite them like nand_gate when those specs are implemented.
+# Not wired by any build() below.
+
+
+@subcircuit
+def nor_gate(va, vb, vout, vdd, gnd):
+    """Pure static-CMOS 2-input NOR gate."""
+    qp1 = Part("Transistor_FET", "BSS84",  footprint=FP_SOT23)
+    qp2 = Part("Transistor_FET", "BSS84",  footprint=FP_SOT23)
+    qn1 = Part("Transistor_FET", "BSS138", footprint=FP_SOT23)
+    qn2 = Part("Transistor_FET", "BSS138", footprint=FP_SOT23)
+    p_internal = Net()
+
+    va.connect(qp1['G'], qn1['G'])
+    vb.connect(qp2['G'], qn2['G'])
+
+    vdd.connect(qp1['S'])
+    p_internal.connect(qp1['D'], qp2['S'])
+
+    gnd.connect(qn1['S'], qn2['S'])
+    vout.connect(qp2['D'], qn1['D'], qn2['D'])
+
+
+@subcircuit
+def inverter(vin, vout, vdd, gnd):
+    """Pure static-CMOS inverter (NOT gate)."""
+    q_p = Part("Transistor_FET", "BSS84",  footprint=FP_SOT23)
+    q_n = Part("Transistor_FET", "BSS138", footprint=FP_SOT23)
+
+    vin.connect(q_p['G'], q_n['G'])
+    vdd.connect(q_p['S'])
+    gnd.connect(q_n['S'])
+    vout.connect(q_p['D'], q_n['D'])
