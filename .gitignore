@@ -1,0 +1,26 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Editor local history
+.history/
+
+# SKiDL generated output
+*_sklib.py
+*.net
+*.erc
+*.log
+
+# KiCad transient / local / backup files
+*.kicad_prl
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*-backups/
+fp-info-cache
+~*.lck
+_autosave-*
+*.bak
