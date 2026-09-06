@@ -10,16 +10,18 @@ def _run(args, cwd):
                           cwd=cwd, capture_output=True, text=True)
 
 
-def test_default_target_builds_nand(tmp_path):
+def test_no_argument_builds_every_module(tmp_path):
     r = _run([], tmp_path)
     assert r.returncode == 0, r.stderr
     assert (tmp_path / "nand_module.net").exists()
+    assert (tmp_path / "indicator_module.net").exists()
 
 
-def test_explicit_indicator_target(tmp_path):
+def test_explicit_single_target(tmp_path):
     r = _run(["indicator"], tmp_path)
     assert r.returncode == 0, r.stderr
     assert (tmp_path / "indicator_module.net").exists()
+    assert not (tmp_path / "nand_module.net").exists()
 
 
 def test_unknown_target_exits_nonzero(tmp_path):

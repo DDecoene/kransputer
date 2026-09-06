@@ -15,7 +15,7 @@ import sys
 import kicad_env  # noqa: F401  - points skidl at the KiCad libs; keep before skidl
 
 from skidl import (
-    Part, Net, subcircuit, generate_netlist, set_default_tool, POWER,
+    Part, Net, subcircuit, generate_netlist, set_default_tool, reset, POWER,
 )
 
 try:
@@ -236,8 +236,6 @@ def build_indicator_module():
 
 # ---- Entry point ------------------------------------------------------------
 
-TARGET = "nand"
-
 BUILDERS = {
     "nand": build_nand_module,
     "indicator": build_indicator_module,
@@ -245,14 +243,16 @@ BUILDERS = {
 
 
 def main(argv=None):
+    """No argument: build every module netlist. One argument: just that one."""
     argv = sys.argv[1:] if argv is None else list(argv)
-    target = argv[0] if argv else TARGET
-    try:
-        builder = BUILDERS[target]
-    except KeyError:
-        sys.exit(f"unknown target {target!r}; choose from {sorted(BUILDERS)}")
-    builder()
-    print(f"wrote {target}_module.net")
+    targets = argv or list(BUILDERS)
+    unknown = [t for t in targets if t not in BUILDERS]
+    if unknown:
+        sys.exit(f"unknown target(s) {unknown}; choose from {sorted(BUILDERS)}")
+    for target in targets:
+        reset()   # each module is generated from a clean circuit
+        BUILDERS[target]()
+        print(f"wrote {target}_module.net")
 
 
 if __name__ == "__main__":

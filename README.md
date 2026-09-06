@@ -43,7 +43,8 @@ of one breadboard); columns b–e and f–i stay free for patch wires.
 python3 -m venv venv
 ./venv/bin/pip install -r requirements.txt
 
-./venv/bin/python circuit.py nand        # writes nand_module.net
+./venv/bin/python circuit.py             # writes every <target>_module.net
+./venv/bin/python circuit.py nand        # or just one
 ```
 
 1. In KiCad: new PCB project `nand_module/`, import `nand_module.net`, save,
