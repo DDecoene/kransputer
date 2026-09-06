@@ -1,0 +1,3 @@
+skidl>=2.3.0
+kinet2pcb
+pytest
