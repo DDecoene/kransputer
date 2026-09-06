@@ -1,16 +1,28 @@
-"""Inspection helpers for the SKiDL default circuit."""
-from skidl import default_circuit
+"""Inspection helpers for the SKiDL default circuit.
+
+skidl 2.3 injects ``default_circuit`` into Python builtins rather than exposing
+it as ``skidl.default_circuit``; reach it through the ``builtins`` module.
+"""
+import builtins
+
+
+def circuit():
+    """The active SKiDL circuit (skidl 2.3 keeps it in builtins)."""
+    return builtins.default_circuit
+
+
+_circuit = circuit
 
 
 def part_by_ref(ref):
-    for p in default_circuit.parts:
+    for p in _circuit().parts:
         if p.ref == ref:
             return p
     raise KeyError(ref)
 
 
 def net_by_name(name):
-    for n in default_circuit.nets:
+    for n in _circuit().nets:
         if n.name == name:
             return n
     raise KeyError(name)
