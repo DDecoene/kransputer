@@ -62,10 +62,10 @@ def layout_nand(by_ref):
     for n in range(1, 5):
         gx = gate_x(n)
         cells = {
-            f"NAND_{n}_QPA": (gx - dx, y_up),
-            f"NAND_{n}_QPB": (gx + dx, y_up),
-            f"NAND_{n}_QNA": (gx - dx, y_dn),
-            f"NAND_{n}_QNB": (gx + dx, y_dn),
+            f"QPA_{n}": (gx - dx, y_up),
+            f"QPB_{n}": (gx + dx, y_up),
+            f"QNA_{n}": (gx - dx, y_dn),
+            f"QNB_{n}": (gx + dx, y_dn),
         }
         for ref, (x, y) in cells.items():
             if _put(by_ref, ref, x, y):
@@ -85,10 +85,10 @@ def layout_indicator(by_ref):
         if _put(by_ref, f"RN{n}", gx, Y_TOP + 4.5):
             placed.add(f"RN{n}")
         for c, pin in enumerate(("A", "B", "Y")):
-            if _put(by_ref, f"NAND_{n}_{pin}", gx - dx, row_y[c]):
-                placed.add(f"NAND_{n}_{pin}")
-            if _put(by_ref, f"NAND_{n}_Q{pin}", gx + dx, row_y[c]):
-                placed.add(f"NAND_{n}_Q{pin}")
+            if _put(by_ref, f"{pin}_{n}", gx - dx, row_y[c]):
+                placed.add(f"{pin}_{n}")
+            if _put(by_ref, f"Q{pin}_{n}", gx + dx, row_y[c]):
+                placed.add(f"Q{pin}_{n}")
     if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
         placed.add("C1")
     return placed
@@ -112,6 +112,39 @@ def _draw_edge_rect(board, x0, y0, x1, y1):
         seg.SetEnd(_vmm(bx, by))
         seg.SetWidth(pcbnew.FromMM(0.15))
         board.Add(seg)
+
+
+ZONE_INSET = 0.3   # mm the pour stays back from the board edge
+
+
+def _add_gnd_zone(board, x0, y0, x1, y1):
+    """Full B.Cu ground pour, inset from the edge, thermal relief on pads."""
+    net = board.GetNetInfo().GetNetItem("GND")
+    if net is None or net.GetNetCode() == 0:
+        print("warning: no GND net on this board, skipping ground pour")
+        return
+    for z in list(board.Zones()):
+        if z.GetZoneName() == "GND_B":
+            board.Remove(z)
+
+    i = ZONE_INSET
+    chain = pcbnew.SHAPE_LINE_CHAIN()
+    for x, y in ((x0 + i, y0 + i), (x1 - i, y0 + i),
+                 (x1 - i, y1 - i), (x0 + i, y1 - i)):
+        chain.Append(pcbnew.FromMM(x), pcbnew.FromMM(y))
+    chain.SetClosed(True)
+
+    z = pcbnew.ZONE(board)
+    z.SetLayer(pcbnew.B_Cu)
+    z.SetNetCode(net.GetNetCode())
+    z.SetZoneName("GND_B")
+    z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL)
+    z.SetLocalClearance(pcbnew.FromMM(0.3))
+    z.SetMinThickness(pcbnew.FromMM(0.25))
+    z.AddPolygon(chain)
+    board.Add(z)
+
+    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 
 
 # ---- Driver -------------------------------------------------------------------
@@ -141,10 +174,12 @@ def place(target, board_path):
     y0 = Y_TOP - MARGIN_Y
     y1 = Y_BOT + MARGIN_Y
     _draw_edge_rect(board, x0, y0, x1, y1)
+    _add_gnd_zone(board, x0, y0, x1, y1)
 
     pcbnew.SaveBoard(board_path, board)
     print(f"placed {len(fps)} footprints, outline "
-          f"{x1 - x0:.1f} x {y1 - y0:.1f} mm, saved {board_path}")
+          f"{x1 - x0:.1f} x {y1 - y0:.1f} mm, B.Cu ground pour, "
+          f"saved {board_path}")
 
 
 def main():

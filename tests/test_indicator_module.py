@@ -6,7 +6,7 @@ from helpers import circuit as active_circuit, net_by_name, pins_named, pins_num
 def _one_gate():
     a, b, y = Net("NAND_1_A"), Net("NAND_1_B"), Net("NAND_1_Y")
     vdd, gnd = Net("VDD"), Net("GND")
-    circuit.indicator_gate("NAND_1", 1, a, b, y, vdd, gnd)
+    circuit.indicator_gate(1, a, b, y, vdd, gnd)
 
 
 def _part(ref):
@@ -16,21 +16,21 @@ def _part(ref):
 def test_indicator_gate_parts():
     _one_gate()
     refs = {p.ref for p in active_circuit().parts}
-    assert {"NAND_1_QA", "NAND_1_QB", "NAND_1_QY"} <= refs   # buffer FETs
-    assert {"NAND_1_A", "NAND_1_B", "NAND_1_Y"} <= refs      # LEDs
-    assert "RN1" in refs                                     # resistor array
-    led = _part("NAND_1_A")
-    assert led.value == "NAND_1_A"
+    assert {"QA_1", "QB_1", "QY_1"} <= refs   # buffer FETs
+    assert {"A_1", "B_1", "Y_1"} <= refs      # LEDs
+    assert "RN1" in refs                   # resistor array
+    led = _part("A_1")
+    assert led.value == "A_1"
     assert led.footprint == circuit.FP_LED
 
 
 def test_indicator_gate_channel_topology():
     _one_gate()
     # BSS138 common source: source -> GND, gate -> bus signal
-    assert ("NAND_1_QB", "G") in pins_named(net_by_name("NAND_1_B"))
-    assert ("NAND_1_QB", "S") in pins_named(net_by_name("GND"))
+    assert ("QB_1", "G") in pins_named(net_by_name("NAND_1_B"))
+    assert ("QB_1", "S") in pins_named(net_by_name("GND"))
     # LED cathode ties to the FET drain (private net)
-    d, q = _part("NAND_1_B"), _part("NAND_1_QB")
+    d, q = _part("B_1"), _part("QB_1")
     assert d["K"].net is q["D"].net
     assert d["K"].net.name not in ("VDD", "GND", "NAND_1_B")
     # LED anode goes to the array
@@ -62,7 +62,7 @@ def test_assemble_indicator_module_bus_reaches_buffers():
     circuit.assemble_indicator_module()
     j1 = next(p for p in active_circuit().parts if p.ref == "J1")
     assert j1[10].net.name == "NAND_3_B"                       # bus pin 10
-    assert ("NAND_3_QB", "G") in pins_named(net_by_name("NAND_3_B"))
+    assert ("QB_3", "G") in pins_named(net_by_name("NAND_3_B"))
 
 
 def test_build_indicator_module_writes_netlist(tmp_path, monkeypatch):

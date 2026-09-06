@@ -74,18 +74,18 @@ def add_bus_headers(nets):
 
 
 @subcircuit
-def nand_gate(inst, a, b, y, vdd, gnd):
-    """Discrete static-CMOS 2-input NAND.
+def nand_gate(n, a, b, y, vdd, gnd):
+    """Discrete static-CMOS 2-input NAND gate `n` (1..4).
 
-    `inst` (e.g. "NAND_1") prefixes the four transistor refs. Pull-up is two
-    BSS84 in parallel; pull-down is two BSS138 in series through an internal
-    node `<inst>_MID`.
+    The whole board is NAND, so refs drop the redundant prefix: QPA_<n>/QPB_<n>
+    are the parallel BSS84 pull-up, QNA_<n>/QNB_<n> the series BSS138 pull-down
+    through internal node NAND_<n>_MID.
     """
-    qpa = Part("Transistor_FET", "BSS84",  ref=f"{inst}_QPA", footprint=FP_SOT23)
-    qpb = Part("Transistor_FET", "BSS84",  ref=f"{inst}_QPB", footprint=FP_SOT23)
-    qna = Part("Transistor_FET", "BSS138", ref=f"{inst}_QNA", footprint=FP_SOT23)
-    qnb = Part("Transistor_FET", "BSS138", ref=f"{inst}_QNB", footprint=FP_SOT23)
-    mid = Net(f"{inst}_MID")
+    qpa = Part("Transistor_FET", "BSS84",  ref=f"QPA_{n}", footprint=FP_SOT23)
+    qpb = Part("Transistor_FET", "BSS84",  ref=f"QPB_{n}", footprint=FP_SOT23)
+    qna = Part("Transistor_FET", "BSS138", ref=f"QNA_{n}", footprint=FP_SOT23)
+    qnb = Part("Transistor_FET", "BSS138", ref=f"QNB_{n}", footprint=FP_SOT23)
+    mid = Net(f"NAND_{n}_MID")
 
     a   += qpa["G"], qna["G"]
     b   += qpb["G"], qnb["G"]
@@ -162,7 +162,7 @@ def assemble_nand_module():
 
     for n in range(1, 5):
         nand_gate(
-            f"NAND_{n}",
+            n,
             sig[f"NAND_{n}_A"], sig[f"NAND_{n}_B"], sig[f"NAND_{n}_Y"],
             vdd, gnd,
         )
@@ -185,21 +185,24 @@ _RARRAY_SPARE = ("4", "5")
 
 
 @subcircuit
-def indicator_gate(gate, inst_no, sig_a, sig_b, sig_y, vdd, gnd):
-    """Three buffered LED indicators for one gate's A/B/Y bus signals.
+def indicator_gate(n, sig_a, sig_b, sig_y, vdd, gnd):
+    """Three buffered LED indicators for gate `n`'s A/B/Y bus signals.
 
     Per channel a BSS138 in common source (gate = bus signal, high impedance,
     so the logic net is not loaded) sinks an LED whose anode is fed from VDD
-    through one element of the `RN<inst_no>` array. LED lit = logic 1.
+    through one element of the RN<n> array. LED lit = logic 1.
+
+    Refs drop the redundant board name: LEDs A_<n>/B_<n>/Y_<n>, buffer FETs
+    QA_<n>/QB_<n>/QY_<n>, array RN<n>.
     """
-    rn = Part("Device", "R_Pack04", ref=f"RN{inst_no}", value=LED_R,
+    rn = Part("Device", "R_Pack04", ref=f"RN{n}", value=LED_R,
               footprint=FP_RARRAY)
     for (led_pin, vdd_pin), pin, signal in zip(
         _RARRAY_PAIRS, ("A", "B", "Y"), (sig_a, sig_b, sig_y)
     ):
-        q = Part("Transistor_FET", "BSS138", ref=f"{gate}_Q{pin}",
+        q = Part("Transistor_FET", "BSS138", ref=f"Q{pin}_{n}",
                  footprint=FP_SOT23)
-        d = Part("Device", "LED", ref=f"{gate}_{pin}", value=f"{gate}_{pin}",
+        d = Part("Device", "LED", ref=f"{pin}_{n}", value=f"{pin}_{n}",
                  footprint=FP_LED)
         vdd    += rn[vdd_pin]
         gnd    += q["S"]
@@ -220,7 +223,7 @@ def assemble_indicator_module():
 
     for n in range(1, 5):
         indicator_gate(
-            f"NAND_{n}", n,
+            n,
             sig[f"NAND_{n}_A"], sig[f"NAND_{n}_B"], sig[f"NAND_{n}_Y"],
             vdd, gnd,
         )

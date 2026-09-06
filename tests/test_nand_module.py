@@ -8,32 +8,29 @@ from helpers import circuit as active_circuit, net_by_name, pins_named, pins_num
 def _one_gate():
     a, b, y = Net("NAND_1_A"), Net("NAND_1_B"), Net("NAND_1_Y")
     vdd, gnd = Net("VDD"), Net("GND")
-    circuit.nand_gate("NAND_1", a, b, y, vdd, gnd)
+    circuit.nand_gate(1, a, b, y, vdd, gnd)
 
 
 def test_nand_gate_has_four_semantic_transistors():
     _one_gate()
     parts = active_circuit().parts
     refs = {p.ref for p in parts}
-    assert refs == {"NAND_1_QPA", "NAND_1_QPB", "NAND_1_QNA", "NAND_1_QNB"}
+    assert refs == {"QPA_1", "QPB_1", "QNA_1", "QNB_1"}
     vals = {p.ref: p.value for p in parts}
-    assert vals["NAND_1_QPA"] == "BSS84"
-    assert vals["NAND_1_QNA"] == "BSS138"
+    assert vals["QPA_1"] == "BSS84"
+    assert vals["QNA_1"] == "BSS138"
 
 
 def test_nand_gate_topology():
     _one_gate()
-    assert pins_named(net_by_name("NAND_1_A")) == {
-        ("NAND_1_QPA", "G"), ("NAND_1_QNA", "G")}
-    assert pins_named(net_by_name("NAND_1_B")) == {
-        ("NAND_1_QPB", "G"), ("NAND_1_QNB", "G")}
-    assert pins_named(net_by_name("VDD")) == {
-        ("NAND_1_QPA", "S"), ("NAND_1_QPB", "S")}
+    assert pins_named(net_by_name("NAND_1_A")) == {("QPA_1", "G"), ("QNA_1", "G")}
+    assert pins_named(net_by_name("NAND_1_B")) == {("QPB_1", "G"), ("QNB_1", "G")}
+    assert pins_named(net_by_name("VDD")) == {("QPA_1", "S"), ("QPB_1", "S")}
     assert pins_named(net_by_name("NAND_1_Y")) == {
-        ("NAND_1_QPA", "D"), ("NAND_1_QPB", "D"), ("NAND_1_QNA", "D")}
+        ("QPA_1", "D"), ("QPB_1", "D"), ("QNA_1", "D")}
     assert pins_named(net_by_name("NAND_1_MID")) == {
-        ("NAND_1_QNA", "S"), ("NAND_1_QNB", "D")}
-    assert pins_named(net_by_name("GND")) == {("NAND_1_QNB", "S")}
+        ("QNA_1", "S"), ("QNB_1", "D")}
+    assert pins_named(net_by_name("GND")) == {("QNB_1", "S")}
 
 
 def test_nand_gate_footprints_are_sot23():
