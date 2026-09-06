@@ -232,3 +232,28 @@ def assemble_indicator_module():
 def build_indicator_module():
     assemble_indicator_module()
     generate_netlist(file_="indicator_module.net", do_backup=False)
+
+
+# ---- Entry point ------------------------------------------------------------
+
+TARGET = "nand"
+
+BUILDERS = {
+    "nand": build_nand_module,
+    "indicator": build_indicator_module,
+}
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else list(argv)
+    target = argv[0] if argv else TARGET
+    try:
+        builder = BUILDERS[target]
+    except KeyError:
+        sys.exit(f"unknown target {target!r}; choose from {sorted(BUILDERS)}")
+    builder()
+    print(f"wrote {target}_module.net")
+
+
+if __name__ == "__main__":
+    main()
