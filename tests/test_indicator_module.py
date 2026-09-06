@@ -16,21 +16,21 @@ def _part(ref):
 def test_indicator_gate_parts():
     _one_gate()
     refs = {p.ref for p in active_circuit().parts}
-    assert {"QA_1", "QB_1", "QY_1"} <= refs   # buffer FETs
-    assert {"A_1", "B_1", "Y_1"} <= refs      # LEDs
+    assert {"QA1", "QB1", "QY1"} <= refs   # buffer FETs
+    assert {"A1", "B1", "Y1"} <= refs      # LEDs
     assert "RN1" in refs                   # resistor array
-    led = _part("A_1")
-    assert led.value == "A_1"
+    led = _part("A1")
+    assert led.value == "A1"
     assert led.footprint == circuit.FP_LED
 
 
 def test_indicator_gate_channel_topology():
     _one_gate()
     # BSS138 common source: source -> GND, gate -> bus signal
-    assert ("QB_1", "G") in pins_named(net_by_name("NAND_1_B"))
-    assert ("QB_1", "S") in pins_named(net_by_name("GND"))
+    assert ("QB1", "G") in pins_named(net_by_name("NAND_1_B"))
+    assert ("QB1", "S") in pins_named(net_by_name("GND"))
     # LED cathode ties to the FET drain (private net)
-    d, q = _part("B_1"), _part("QB_1")
+    d, q = _part("B1"), _part("QB1")
     assert d["K"].net is q["D"].net
     assert d["K"].net.name not in ("VDD", "GND", "NAND_1_B")
     # LED anode goes to the array
@@ -62,7 +62,7 @@ def test_assemble_indicator_module_bus_reaches_buffers():
     circuit.assemble_indicator_module()
     j1 = next(p for p in active_circuit().parts if p.ref == "J1")
     assert j1[10].net.name == "NAND_3_B"                       # bus pin 10
-    assert ("QB_3", "G") in pins_named(net_by_name("NAND_3_B"))
+    assert ("QB3", "G") in pins_named(net_by_name("NAND_3_B"))
 
 
 def test_build_indicator_module_writes_netlist(tmp_path, monkeypatch):

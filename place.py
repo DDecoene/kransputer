@@ -51,6 +51,18 @@ def _put(by_ref, ref, x, y, rot=0.0):
     return True
 
 
+def _ref_text(by_ref, ref, dy_mm, size_mm=0.8):
+    """Park the reference text `dy_mm` off the part centre, at `size_mm`."""
+    fp = by_ref.get(ref)
+    if fp is None:
+        return
+    t = fp.Reference()
+    t.SetFPRelativePosition(pcbnew.VECTOR2I(0, pcbnew.FromMM(dy_mm)))
+    t.SetTextAngleDegrees(0)
+    t.SetTextSize(pcbnew.VECTOR2I(pcbnew.FromMM(size_mm), pcbnew.FromMM(size_mm)))
+    t.SetTextThickness(pcbnew.FromMM(0.12))
+
+
 # ---- Per-board layouts -------------------------------------------------------
 
 def layout_nand(by_ref):
@@ -62,14 +74,20 @@ def layout_nand(by_ref):
     for n in range(1, 5):
         gx = gate_x(n)
         cells = {
-            f"QPA_{n}": (gx - dx, y_up),
-            f"QPB_{n}": (gx + dx, y_up),
-            f"QNA_{n}": (gx - dx, y_dn),
-            f"QNB_{n}": (gx + dx, y_dn),
+            f"QPA{n}": (gx - dx, y_up),
+            f"QPB{n}": (gx + dx, y_up),
+            f"QNA{n}": (gx - dx, y_dn),
+            f"QNB{n}": (gx + dx, y_dn),
         }
         for ref, (x, y) in cells.items():
             if _put(by_ref, ref, x, y):
                 placed.add(ref)
+        # keep the ref text off the header pin labels: pull-up text below the
+        # part, pull-down text above -> both land in the central gap.
+        _ref_text(by_ref, f"QPA{n}", 2.6)
+        _ref_text(by_ref, f"QPB{n}", 2.6)
+        _ref_text(by_ref, f"QNA{n}", -2.6)
+        _ref_text(by_ref, f"QNB{n}", -2.6)
     if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
         placed.add("C1")
     return placed
@@ -85,10 +103,10 @@ def layout_indicator(by_ref):
         if _put(by_ref, f"RN{n}", gx, Y_TOP + 4.5):
             placed.add(f"RN{n}")
         for c, pin in enumerate(("A", "B", "Y")):
-            if _put(by_ref, f"{pin}_{n}", gx - dx, row_y[c]):
-                placed.add(f"{pin}_{n}")
-            if _put(by_ref, f"Q{pin}_{n}", gx + dx, row_y[c]):
-                placed.add(f"Q{pin}_{n}")
+            if _put(by_ref, f"{pin}{n}", gx - dx, row_y[c]):
+                placed.add(f"{pin}{n}")
+            if _put(by_ref, f"Q{pin}{n}", gx + dx, row_y[c]):
+                placed.add(f"Q{pin}{n}")
     if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
         placed.add("C1")
     return placed

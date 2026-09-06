@@ -77,14 +77,14 @@ def add_bus_headers(nets):
 def nand_gate(n, a, b, y, vdd, gnd):
     """Discrete static-CMOS 2-input NAND gate `n` (1..4).
 
-    The whole board is NAND, so refs drop the redundant prefix: QPA_<n>/QPB_<n>
-    are the parallel BSS84 pull-up, QNA_<n>/QNB_<n> the series BSS138 pull-down
+    The whole board is NAND, so refs drop the redundant prefix: QPA<n>/QPB<n>
+    are the parallel BSS84 pull-up, QNA<n>/QNB<n> the series BSS138 pull-down
     through internal node NAND_<n>_MID.
     """
-    qpa = Part("Transistor_FET", "BSS84",  ref=f"QPA_{n}", footprint=FP_SOT23)
-    qpb = Part("Transistor_FET", "BSS84",  ref=f"QPB_{n}", footprint=FP_SOT23)
-    qna = Part("Transistor_FET", "BSS138", ref=f"QNA_{n}", footprint=FP_SOT23)
-    qnb = Part("Transistor_FET", "BSS138", ref=f"QNB_{n}", footprint=FP_SOT23)
+    qpa = Part("Transistor_FET", "BSS84",  ref=f"QPA{n}", footprint=FP_SOT23)
+    qpb = Part("Transistor_FET", "BSS84",  ref=f"QPB{n}", footprint=FP_SOT23)
+    qna = Part("Transistor_FET", "BSS138", ref=f"QNA{n}", footprint=FP_SOT23)
+    qnb = Part("Transistor_FET", "BSS138", ref=f"QNB{n}", footprint=FP_SOT23)
     mid = Net(f"NAND_{n}_MID")
 
     a   += qpa["G"], qna["G"]
@@ -192,17 +192,17 @@ def indicator_gate(n, sig_a, sig_b, sig_y, vdd, gnd):
     so the logic net is not loaded) sinks an LED whose anode is fed from VDD
     through one element of the RN<n> array. LED lit = logic 1.
 
-    Refs drop the redundant board name: LEDs A_<n>/B_<n>/Y_<n>, buffer FETs
-    QA_<n>/QB_<n>/QY_<n>, array RN<n>.
+    Refs drop the redundant board name: LEDs A<n>/B<n>/Y<n>, buffer FETs
+    QA<n>/QB<n>/QY<n>, array RN<n>.
     """
     rn = Part("Device", "R_Pack04", ref=f"RN{n}", value=LED_R,
               footprint=FP_RARRAY)
     for (led_pin, vdd_pin), pin, signal in zip(
         _RARRAY_PAIRS, ("A", "B", "Y"), (sig_a, sig_b, sig_y)
     ):
-        q = Part("Transistor_FET", "BSS138", ref=f"Q{pin}_{n}",
+        q = Part("Transistor_FET", "BSS138", ref=f"Q{pin}{n}",
                  footprint=FP_SOT23)
-        d = Part("Device", "LED", ref=f"{pin}_{n}", value=f"{pin}_{n}",
+        d = Part("Device", "LED", ref=f"{pin}{n}", value=f"{pin}{n}",
                  footprint=FP_LED)
         vdd    += rn[vdd_pin]
         gnd    += q["S"]
