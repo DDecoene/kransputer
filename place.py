@@ -1,40 +1,103 @@
 #!/usr/bin/env python3
-"""Auto-place a kransputer bus-module board in pcbnew.
+"""Lay out a kransputer bus-module board in pcbnew.
 
-Positions the two edge headers on opposite rows, clusters each subcircuit's
-footprints in the band between them, drops leftovers (C1) below, and draws a
-tight Edge.Cuts rectangle.
+The boards are highly regular (four identical cells between two bus headers),
+so every footprint gets an exact, hand-computed position rather than a guessed
+grid. Result: parts sit directly under their bus pins, aligned, no overlap,
+short mostly-vertical ratsnest -> easy to autoroute afterwards.
 
 Run with KiCad's bundled Python (pcbnew is not in the project venv):
-  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 place.py [target]
+  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+      place.py [nand|indicator] [board.kicad_pcb]
 
-Expects <target>_module/<target>_module.kicad_pcb next to this script, already
-populated from <target>_module.net.
+With no board path it uses <target>_module/<target>_module.kicad_pcb under the
+current directory.
 """
 import os
 import sys
 
 import pcbnew
 
-import placement as pl
+# ---- Geometry (mm) -------------------------------------------------------
+PITCH        = 2.54                 # header pin pitch
+X0           = 20.0                 # X of header pin 1
+Y_TOP        = 20.0                 # Y of the top header (J1)
+ROW_SPACING  = 22.86               # 0.9" -> row a to row j of one breadboard
+Y_BOT        = Y_TOP + ROW_SPACING  # Y of the bottom header (J2)
+GATE_PITCH   = 9.5                  # X distance between gate cells
+X_CENTER     = X0 + 7.5 * PITCH     # midpoint of the 16-pin header
+MARGIN_X_L   = 6.0                  # left board margin (houses C1 beside pin 1)
+MARGIN_X_R   = 3.0
+MARGIN_Y     = 4.0
 
-ROW_SPACING_MM    = 22.86     # 0.9" -> row a to row j of one breadboard
-HEADER_PITCH_MM   = 2.54
-ORIGIN_MM         = (40.0, 40.0)
-CLUSTER_COLS      = 3
-CLUSTER_PITCH_MM  = (6.0, 6.0)
-GROUP_GAP_MM      = 4.0
-OUTLINE_MARGIN_MM = 4.0
+Y_MID = (Y_TOP + Y_BOT) / 2.0
 
-SHEET_ORDER = [
-    "nand_gate1", "nand_gate2", "nand_gate3", "nand_gate4",
-    "indicator_gate1", "indicator_gate2", "indicator_gate3", "indicator_gate4",
-]
+
+def gate_x(n):
+    """Centre X of gate n (1..4), centred on the header."""
+    return X_CENTER + (n - 2.5) * GATE_PITCH
 
 
 def _vmm(x, y):
     return pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y))
 
+
+def _put(by_ref, ref, x, y, rot=0.0):
+    fp = by_ref.get(ref)
+    if fp is None:
+        return False
+    fp.SetPosition(_vmm(x, y))
+    fp.SetOrientationDegrees(rot)
+    return True
+
+
+# ---- Per-board layouts -------------------------------------------------------
+
+def layout_nand(by_ref):
+    """4x nand_gate: 2x2 SOT-23 per gate, pull-up top row, pull-down bottom."""
+    placed = set()
+    y_up = Y_TOP + 7.0
+    y_dn = Y_BOT - 7.0
+    dx = 2.6
+    for n in range(1, 5):
+        gx = gate_x(n)
+        cells = {
+            f"NAND_{n}_QPA": (gx - dx, y_up),
+            f"NAND_{n}_QPB": (gx + dx, y_up),
+            f"NAND_{n}_QNA": (gx - dx, y_dn),
+            f"NAND_{n}_QNB": (gx + dx, y_dn),
+        }
+        for ref, (x, y) in cells.items():
+            if _put(by_ref, ref, x, y):
+                placed.add(ref)
+    if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
+        placed.add("C1")
+    return placed
+
+
+def layout_indicator(by_ref):
+    """4 gates: RN array on top, then LED|FET rows for A, B, Y."""
+    placed = set()
+    row_y = [Y_TOP + 9.0, Y_TOP + 13.5, Y_TOP + 18.0]
+    dx = 2.4
+    for n in range(1, 5):
+        gx = gate_x(n)
+        if _put(by_ref, f"RN{n}", gx, Y_TOP + 4.5):
+            placed.add(f"RN{n}")
+        for c, pin in enumerate(("A", "B", "Y")):
+            if _put(by_ref, f"NAND_{n}_{pin}", gx - dx, row_y[c]):
+                placed.add(f"NAND_{n}_{pin}")
+            if _put(by_ref, f"NAND_{n}_Q{pin}", gx + dx, row_y[c]):
+                placed.add(f"NAND_{n}_Q{pin}")
+    if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
+        placed.add("C1")
+    return placed
+
+
+LAYOUTS = {"nand": layout_nand, "indicator": layout_indicator}
+
+
+# ---- Edge.Cuts ------------------------------------------------------------
 
 def _draw_edge_rect(board, x0, y0, x1, y1):
     for d in list(board.GetDrawings()):
@@ -51,63 +114,43 @@ def _draw_edge_rect(board, x0, y0, x1, y1):
         board.Add(seg)
 
 
-def place(board_path):
+# ---- Driver -------------------------------------------------------------------
+
+def place(target, board_path):
     board = pcbnew.LoadBoard(board_path)
     fps = list(board.GetFootprints())
     if not fps:
         sys.exit("board has no footprints; import the netlist first")
     by_ref = {f.GetReference(): f for f in fps}
 
-    ox, oy = ORIGIN_MM
-    y_top, y_bot = pl.bus_row_ys(ROW_SPACING_MM, oy)
-    xs = pl.header_pin_xs(16, HEADER_PITCH_MM, ox)
+    # rot 90 lays the 1x16 pin row along +X: pin 1 at X0, pin 16 at X0+15*PITCH
+    _put(by_ref, "J1", X0, Y_TOP, rot=90.0)
+    _put(by_ref, "J2", X0, Y_BOT, rot=90.0)
 
-    for ref, y, rot in (("J1", y_top, 0.0), ("J2", y_bot, 180.0)):
-        fp = by_ref.get(ref)
-        if fp is not None:
-            fp.SetPosition(_vmm(xs[0], y))
-            fp.SetOrientationDegrees(rot)
-
-    placed = {"J1", "J2"}
-    groups = pl.group_by_sheet(
-        [(f.GetReference(), f.GetSheetname() or "") for f in fps]
-    )
-    ordered = [s for s in SHEET_ORDER if s in groups]
-    ordered += sorted(s for s in groups
-                      if s not in SHEET_ORDER and s != "root")
-
-    band_x, band_y = ox, y_top + HEADER_PITCH_MM + GROUP_GAP_MM
-    row_h = 3 * CLUSTER_PITCH_MM[1] + GROUP_GAP_MM
-    for sheet in ordered:
-        refs = sorted(groups[sheet], key=pl.natural_key)
-        pts = pl.grid_positions(len(refs), CLUSTER_COLS,
-                                CLUSTER_PITCH_MM[0], CLUSTER_PITCH_MM[1],
-                                (band_x, band_y))
-        for ref, (x, y) in zip(refs, pts):
-            by_ref[ref].SetPosition(_vmm(x, y))
-            by_ref[ref].SetOrientationDegrees(0.0)
-            placed.add(ref)
-        band_x += CLUSTER_COLS * CLUSTER_PITCH_MM[0] + GROUP_GAP_MM
-        if band_x > xs[-1]:
-            band_x, band_y = ox, band_y + row_h
+    placed = {"J1", "J2"} | LAYOUTS[target](by_ref)
 
     leftover = [f for f in fps if f.GetReference() not in placed]
-    pts = pl.grid_positions(len(leftover), 4, 5.0, 5.0,
-                            (ox, y_bot - HEADER_PITCH_MM - GROUP_GAP_MM - 10))
-    for fp, (x, y) in zip(leftover, pts):
-        fp.SetPosition(_vmm(x, y))
+    for i, fp in enumerate(leftover):
+        fp.SetPosition(_vmm(X0 + i * 4.0, Y_BOT + 12.0))
+        print(f"warning: unplaced footprint {fp.GetReference()} parked below")
 
-    coords = [(pcbnew.ToMM(f.GetPosition().x), pcbnew.ToMM(f.GetPosition().y))
-              for f in fps]
-    x0, y0, x1, y1 = pl.outline_rect(coords, OUTLINE_MARGIN_MM)
+    # Outline hugs the header pin span (that is the breadboard plug width);
+    # the layout keeps every part inside it by construction.
+    x0 = X0 - MARGIN_X_L
+    x1 = X0 + 15 * PITCH + MARGIN_X_R
+    y0 = Y_TOP - MARGIN_Y
+    y1 = Y_BOT + MARGIN_Y
     _draw_edge_rect(board, x0, y0, x1, y1)
 
     pcbnew.SaveBoard(board_path, board)
-    print(f"placed {len(fps)} footprints, drew outline, saved {board_path}")
+    print(f"placed {len(fps)} footprints, outline "
+          f"{x1 - x0:.1f} x {y1 - y0:.1f} mm, saved {board_path}")
 
 
 def main():
     target = sys.argv[1] if len(sys.argv) > 1 else "nand"
+    if target not in LAYOUTS:
+        sys.exit(f"unknown target {target!r}; choose from {sorted(LAYOUTS)}")
     if len(sys.argv) > 2:
         board_path = sys.argv[2]
     else:
@@ -116,9 +159,9 @@ def main():
     if not os.path.exists(board_path):
         sys.exit(f"board not found: {board_path}\n"
                  f"In KiCad: new PCB project '{target}_module', import "
-                 f"{target}_module.net, save. Then rerun (from that folder's "
-                 f"parent), or pass the .kicad_pcb path as the 2nd argument.")
-    place(board_path)
+                 f"{target}_module.net, save. Then rerun from that folder's "
+                 f"parent, or pass the .kicad_pcb path as the 2nd argument.")
+    place(target, board_path)
 
 
 if __name__ == "__main__":

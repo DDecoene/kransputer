@@ -77,13 +77,13 @@ the net it watches; one indicator board on the bus is negligible.
 ```
 
 The placement integration test is skipped unless `kinet2pcb` can import
-`pcbnew` (it cannot from the venv). `place.py` itself is exercised through the
-unit-tested pure helpers in `placement.py`.
+`pcbnew` (it cannot from the venv). `place.py` uses fixed, hand-computed
+coordinates per board type, so its output is deterministic and easy to
+eyeball in KiCad.
 
 ## Layout
 
-- `circuit.py`  — SKiDL netlist generator (all boards, `TARGET` / `argv[1]`)
-- `placement.py`— pure geometry / grouping helpers
-- `place.py`    — pcbnew auto-placement wrapper
+- `circuit.py`  — SKiDL netlist generator (all boards, no arg = build every one)
+- `place.py`    — pcbnew layout: exact positions per board type + Edge.Cuts
 - `kicad_env.py`— points SKiDL at the bundled KiCad libraries on macOS
 - `SYMBOLS.md`  — resolved KiCad symbols and the resistor-array pin map
