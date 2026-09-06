@@ -174,3 +174,61 @@ def assemble_nand_module():
 def build_nand_module():
     assemble_nand_module()
     generate_netlist(file_="nand_module.net", do_backup=False)
+
+
+# ---- Indicator board ----------------------------------------------------
+
+# (LED-anode-side pin, VDD-side pin) for each Device:R_Pack04 resistor used by
+# a channel; the 4th resistor (pins 4 & 5) is parked on GND. See SYMBOLS.md.
+_RARRAY_PAIRS = [("1", "8"), ("2", "7"), ("3", "6")]
+_RARRAY_SPARE = ("4", "5")
+
+
+@subcircuit
+def indicator_gate(gate, inst_no, sig_a, sig_b, sig_y, vdd, gnd):
+    """Three buffered LED indicators for one gate's A/B/Y bus signals.
+
+    Per channel a BSS138 in common source (gate = bus signal, high impedance,
+    so the logic net is not loaded) sinks an LED whose anode is fed from VDD
+    through one element of the `RN<inst_no>` array. LED lit = logic 1.
+    """
+    rn = Part("Device", "R_Pack04", ref=f"RN{inst_no}", value=LED_R,
+              footprint=FP_RARRAY)
+    for (led_pin, vdd_pin), pin, signal in zip(
+        _RARRAY_PAIRS, ("A", "B", "Y"), (sig_a, sig_b, sig_y)
+    ):
+        q = Part("Transistor_FET", "BSS138", ref=f"{gate}_Q{pin}",
+                 footprint=FP_SOT23)
+        d = Part("Device", "LED", ref=f"{gate}_{pin}", value=f"{gate}_{pin}",
+                 footprint=FP_LED)
+        vdd    += rn[vdd_pin]
+        gnd    += q["S"]
+        signal += q["G"]
+        d["K"] += q["D"]
+        d["A"] += rn[led_pin]
+    # park the unused 4th resistor so its pads are not left floating
+    gnd += rn[_RARRAY_SPARE[0]], rn[_RARRAY_SPARE[1]]
+
+
+def assemble_indicator_module():
+    """12 buffered LEDs (4 gates x A/B/Y) + bulk cap + bus headers."""
+    vdd, gnd = Net("VDD"), Net("GND")
+    vdd.drive = POWER
+    gnd.drive = POWER
+    sig = _signal_nets()
+    nets = {"VDD": vdd, "GND": gnd, **sig}
+
+    for n in range(1, 5):
+        indicator_gate(
+            f"NAND_{n}", n,
+            sig[f"NAND_{n}_A"], sig[f"NAND_{n}_B"], sig[f"NAND_{n}_Y"],
+            vdd, gnd,
+        )
+
+    _bulk_cap(vdd, gnd)
+    add_bus_headers(nets)
+
+
+def build_indicator_module():
+    assemble_indicator_module()
+    generate_netlist(file_="indicator_module.net", do_backup=False)
