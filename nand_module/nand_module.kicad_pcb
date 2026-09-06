@@ -93,14 +93,14 @@
 		(at 31.699999 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPA_2"
-			(at 0 -2.4 0)
+		(property "Reference" "QPA2"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "531aa513-4244-456d-80de-456a9ebfba41")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -459,14 +459,14 @@
 		(at 50.699999 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNA_4"
-			(at 0 -2.4 0)
+		(property "Reference" "QNA4"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "6d7dcaa9-abff-4cb0-bff6-1ef281dd1113")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -825,14 +825,14 @@
 		(at 46.4 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNB_3"
-			(at 0.1 -3.86 0)
+		(property "Reference" "QNB3"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "d22705ce-147a-4588-a9a2-330cf715f56c")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -1191,14 +1191,14 @@
 		(at 36.9 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNB_2"
-			(at 0 -3.86 0)
+		(property "Reference" "QNB2"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "68be06ca-0a69-4c9e-adfd-59c3bc3153c7")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -1557,14 +1557,14 @@
 		(at 46.4 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPB_3"
-			(at -0.4 -3.5 0)
+		(property "Reference" "QPB3"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "9c8b276c-4830-4606-98a7-79c90bd68c8e")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -1923,14 +1923,14 @@
 		(at 27.4 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNB_1"
-			(at 0 -3.86 0)
+		(property "Reference" "QNB1"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "81ba7607-447d-43cb-bfd7-456594c97992")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -2289,14 +2289,14 @@
 		(at 22.199999 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNA_1"
-			(at 0 -2.4 0)
+		(property "Reference" "QNA1"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "b9847d21-438a-4f55-8645-bfb0bfab29fb")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -2655,14 +2655,14 @@
 		(at 41.199999 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNA_3"
-			(at 0 -2.4 0)
+		(property "Reference" "QNA3"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "e0aa680e-ae1e-44c3-ae4a-cc909a45e967")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -3021,14 +3021,14 @@
 		(at 22.199999 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPA_1"
-			(at 0 -2.4 0)
+		(property "Reference" "QPA1"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "6811b388-c5b1-4bad-b2f3-9319293425b4")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -3740,14 +3740,14 @@
 		(at 31.699999 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNA_2"
-			(at 0 -2.4 0)
+		(property "Reference" "QNA2"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "fa2fc35d-f5e4-4ab8-a3aa-c914c3fae790")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -4106,14 +4106,14 @@
 		(at 41.199999 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPA_3"
-			(at 0 -2.4 0)
+		(property "Reference" "QPA3"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "d9c9f78b-dd2d-4b5f-ac0e-3ebc69134e55")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -4472,14 +4472,14 @@
 		(at 55.9 35.86)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QNB_4"
-			(at 0 -3.86 0)
+		(property "Reference" "QNB4"
+			(at 0 -2.6 0)
 			(layer "F.SilkS")
 			(uuid "785a8232-b075-4e06-a9e9-c671725210f9")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -4984,14 +4984,14 @@
 		(at 50.699999 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPA_4"
-			(at 0 -1.56 0)
+		(property "Reference" "QPA4"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "ee1f6c34-5831-4275-b7da-a527434e20b2")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -5350,14 +5350,14 @@
 		(at 27.4 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPB_1"
-			(at -0.9 -3.5 0)
+		(property "Reference" "QPB1"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "71c76d0b-788d-4f20-b0fd-4985b895249d")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -6069,14 +6069,14 @@
 		(at 55.9 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPB_4"
-			(at -0.4 -3.5 0)
+		(property "Reference" "QPB4"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "e1ef487d-06ed-4c5b-b088-bacd3e85bc33")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
@@ -6435,14 +6435,14 @@
 		(at 36.9 27)
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
-		(property "Reference" "QPB_2"
-			(at -0.9 -3.5 0)
+		(property "Reference" "QPB2"
+			(at 0 2.6 0)
 			(layer "F.SilkS")
 			(uuid "e4a0561d-dab9-4079-8111-aa747474f61c")
 			(effects
 				(font
-					(size 1 1)
-					(thickness 0.15)
+					(size 0.8 0.8)
+					(thickness 0.12)
 				)
 			)
 		)
