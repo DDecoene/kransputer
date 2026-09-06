@@ -826,7 +826,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QNB_3"
-			(at 0 -2.4 0)
+			(at 0.1 -3.86 0)
 			(layer "F.SilkS")
 			(uuid "d22705ce-147a-4588-a9a2-330cf715f56c")
 			(effects
@@ -1192,7 +1192,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QNB_2"
-			(at 0 -2.4 0)
+			(at 0 -3.86 0)
 			(layer "F.SilkS")
 			(uuid "68be06ca-0a69-4c9e-adfd-59c3bc3153c7")
 			(effects
@@ -1558,7 +1558,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QPB_3"
-			(at 0 -4 0)
+			(at -0.4 -3.5 0)
 			(layer "F.SilkS")
 			(uuid "9c8b276c-4830-4606-98a7-79c90bd68c8e")
 			(effects
@@ -1924,7 +1924,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QNB_1"
-			(at 0 -2.4 0)
+			(at 0 -3.86 0)
 			(layer "F.SilkS")
 			(uuid "81ba7607-447d-43cb-bfd7-456594c97992")
 			(effects
@@ -4473,7 +4473,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QNB_4"
-			(at 0 -2.4 0)
+			(at 0 -3.86 0)
 			(layer "F.SilkS")
 			(uuid "785a8232-b075-4e06-a9e9-c671725210f9")
 			(effects
@@ -5351,7 +5351,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QPB_1"
-			(at 0 -2.4 0)
+			(at -0.9 -3.5 0)
 			(layer "F.SilkS")
 			(uuid "71c76d0b-788d-4f20-b0fd-4985b895249d")
 			(effects
@@ -6070,7 +6070,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QPB_4"
-			(at 0 -4 0)
+			(at -0.4 -3.5 0)
 			(layer "F.SilkS")
 			(uuid "e1ef487d-06ed-4c5b-b088-bacd3e85bc33")
 			(effects
@@ -6436,7 +6436,7 @@
 		(descr "SOT, 3 Pin (JEDEC TO-236 Var AB https://www.jedec.org/document_search?search_api_views_fulltext=TO-236)")
 		(tags "SOT TO_SOT_SMD")
 		(property "Reference" "QPB_2"
-			(at 0 -2.4 0)
+			(at -0.9 -3.5 0)
 			(layer "F.SilkS")
 			(uuid "e4a0561d-dab9-4079-8111-aa747474f61c")
 			(effects
@@ -6834,6 +6834,314 @@
 		)
 		(layer "Edge.Cuts")
 		(uuid "a43af550-aef4-407d-b5e0-f5bd0c28d878")
+	)
+	(gr_text "VDD"
+		(at 20 23.1 90)
+		(layer "F.SilkS")
+		(uuid "f5e0101c-afb5-4ac2-980f-7e44977be68c")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "VDD"
+		(at 20 39.76 90)
+		(layer "F.SilkS")
+		(uuid "3432826b-b938-43c3-b905-2a290fdba3a0")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "GND"
+		(at 22.54 23.1 90)
+		(layer "F.SilkS")
+		(uuid "244f8350-67e1-4aa4-8b78-ceb9d8b61d1e")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "GND"
+		(at 22.54 39.76 90)
+		(layer "F.SilkS")
+		(uuid "3fff1b0b-9d1a-439a-be3f-098cdc09fc9a")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "1A"
+		(at 25.08 23.1 90)
+		(layer "F.SilkS")
+		(uuid "7f8d836d-83fb-4588-a7e6-e8fa86615416")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "1A"
+		(at 25.08 39.76 90)
+		(layer "F.SilkS")
+		(uuid "4f7f3b95-f0a5-4151-863e-5c09f3d99376")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "1B"
+		(at 27.62 23.1 90)
+		(layer "F.SilkS")
+		(uuid "fdb27ea9-12f3-4ea5-b2e5-002533d0066d")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "1B"
+		(at 27.62 39.76 90)
+		(layer "F.SilkS")
+		(uuid "520085e0-ab3e-4e42-9404-b5912c05eb07")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "1Y"
+		(at 30.16 23.1 90)
+		(layer "F.SilkS")
+		(uuid "2c4c6698-671c-42cb-8514-20966461d1f3")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "1Y"
+		(at 30.16 39.76 90)
+		(layer "F.SilkS")
+		(uuid "845087da-ec9d-4f23-9f01-66a4edc17c23")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "2A"
+		(at 32.7 23.1 90)
+		(layer "F.SilkS")
+		(uuid "62d8a8cc-e7b0-43f6-a498-27cce48ba65d")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "2A"
+		(at 32.7 39.76 90)
+		(layer "F.SilkS")
+		(uuid "0a26ec3f-dc7b-4480-a50e-1e1178e23cce")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "2B"
+		(at 35.24 23.1 90)
+		(layer "F.SilkS")
+		(uuid "38fe4b37-001f-480f-a8db-8db17c94f6f6")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "2B"
+		(at 35.24 39.76 90)
+		(layer "F.SilkS")
+		(uuid "f4c86d64-b66d-48ed-8a9f-a8651b7e5cd3")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "2Y"
+		(at 37.78 23.1 90)
+		(layer "F.SilkS")
+		(uuid "2d0f8db0-dd2c-420d-996e-4ce92b43870c")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "2Y"
+		(at 37.78 39.76 90)
+		(layer "F.SilkS")
+		(uuid "4165aacb-9d58-4bc2-8dba-241904d401f5")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "3A"
+		(at 40.32 23.1 90)
+		(layer "F.SilkS")
+		(uuid "d229eead-2754-4c84-ac1a-c92a54e71ab3")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "3A"
+		(at 40.32 39.76 90)
+		(layer "F.SilkS")
+		(uuid "40e407f7-de2d-4a5e-84bd-832d63a6f8bf")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "3B"
+		(at 42.86 23.1 90)
+		(layer "F.SilkS")
+		(uuid "4f746286-6eef-47a8-afd5-225a5a0a93ad")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "3B"
+		(at 42.86 39.76 90)
+		(layer "F.SilkS")
+		(uuid "a81ab3de-8e16-4126-a1f6-8baf1314bfe3")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "3Y"
+		(at 45.4 23.1 90)
+		(layer "F.SilkS")
+		(uuid "ea5e7392-571e-4639-aba5-39a560f204bb")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "3Y"
+		(at 45.4 39.76 90)
+		(layer "F.SilkS")
+		(uuid "fac2dc72-1e98-495e-94c4-8e3725448598")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "4A"
+		(at 47.94 23.1 90)
+		(layer "F.SilkS")
+		(uuid "135b41d5-0d05-4514-9e67-9f87bd4e7824")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "4A"
+		(at 47.94 39.76 90)
+		(layer "F.SilkS")
+		(uuid "fea93956-0268-4771-a511-d0b3bad2f22f")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "4B"
+		(at 50.48 23.1 90)
+		(layer "F.SilkS")
+		(uuid "263a35d4-af49-4a2d-a2ae-18a5404990d8")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "4B"
+		(at 50.48 39.76 90)
+		(layer "F.SilkS")
+		(uuid "6e469d4b-8afc-43af-ab7e-8a1440d86e4b")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "4Y"
+		(at 53.02 23.1 90)
+		(layer "F.SilkS")
+		(uuid "8404c253-c6d3-4232-b32d-767b89dac161")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
+	)
+	(gr_text "4Y"
+		(at 53.02 39.76 90)
+		(layer "F.SilkS")
+		(uuid "24cb1e63-42b4-441a-9776-61ffed75c3ea")
+		(effects
+			(font
+				(size 0.9 0.9)
+				(thickness 0.14)
+			)
+		)
 	)
 	(segment
 		(start 30.762499 34.91)
