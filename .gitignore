@@ -31,3 +31,6 @@ _autosave-*
 
 # claude-project-bundler output
 out/
+
+# personal tooling (claude-project-bundler)
+cpb.config.json
