@@ -17,8 +17,8 @@ def test_nand_gate_has_four_semantic_transistors():
     refs = {p.ref for p in parts}
     assert refs == {"QPA1", "QPB1", "QNA1", "QNB1"}
     vals = {p.ref: p.value for p in parts}
-    assert vals["QPA1"] == "BSS84"
-    assert vals["QNA1"] == "BSS138"
+    assert vals["QPA1"] == "AO3401A"
+    assert vals["QNA1"] == "AO3400A"
 
 
 def test_nand_gate_topology():
@@ -42,8 +42,8 @@ def test_nand_gate_footprints_are_sot23():
 def test_assemble_nand_module_part_counts():
     circuit.assemble_nand_module()
     parts = active_circuit().parts
-    assert len([p for p in parts if p.value == "BSS84"]) == 8
-    assert len([p for p in parts if p.value == "BSS138"]) == 8
+    assert len([p for p in parts if p.value == "AO3401A"]) == 8
+    assert len([p for p in parts if p.value == "AO3400A"]) == 8
     assert {p.ref for p in parts if p.ref.startswith("J")} == {"J1", "J2"}
     assert [p.ref for p in parts if p.ref == "C1"] == ["C1"]
     assert not [p for p in parts if p.value == "LED"]

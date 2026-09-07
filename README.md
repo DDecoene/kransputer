@@ -10,29 +10,48 @@ breadboards and be wired together into larger logic.
 | TARGET      | Board                                    |
 |-------------|-------------------------------------------|
 | `nand`      | 4x discrete static-CMOS 2-input NAND      |
+| `nor`       | 4x discrete static-CMOS 2-input NOR       |
+| `not`       | 6x discrete static-CMOS inverter          |
 | `indicator` | 12-channel buffered bus LED indicator     |
 
+Logic FETs are AO3400A (N-channel) / AO3401A (P-channel) in SOT-23.
+
 The logic boards carry **no** indicator parts. Every node is on the bus; the
-indicator board buffers each signal with a single BSS138 in common source (its
+indicator board buffers each signal with a single AO3400A in common source (its
 gate is high-impedance, so the logic net is not loaded) that sinks an LED fed
 from the indicator board's own VDD rail. **LED lit = logic 1.** Watching the
 machine therefore does not sag the logic levels.
 
 ## Bus pinout
 
-Both edge headers (`J1`, `J2`) carry the same 16 nets, wired 1:1, so any signal
-is reachable from either edge.
+Both edge headers (`J1`, `J2`) carry the same 16 pins, wired 1:1, so any signal
+is reachable from either edge. Framing is fixed: pin 1 = VDD, pin 2 = GND,
+pins 3–14 carry the 12 signal nets the board drives, pins 15/16 are the
+edge-to-edge spares (`BUS_X`, `BUS_Y`).
 
-| Pin | Net      | Pin | Net      |
-|-----|----------|-----|----------|
-| 1   | VDD      | 9   | NAND_3_A |
-| 2   | GND      | 10  | NAND_3_B |
-| 3   | NAND_1_A | 11  | NAND_3_Y |
-| 4   | NAND_1_B | 12  | NAND_4_A |
-| 5   | NAND_1_Y | 13  | NAND_4_B |
-| 6   | NAND_2_A | 14  | NAND_4_Y |
-| 7   | NAND_2_B | 15  | BUS_X (spare, edge-to-edge only) |
-| 8   | NAND_2_Y | 16  | BUS_Y (spare, edge-to-edge only) |
+`J1`/`J2` are stacking headers: male tails point down into the breadboard,
+female sockets face up so the indicator shield can plug onto the same 16 pins.
+
+### Signal nets per board (bus pins 3–14)
+
+| Pin | `nand`   | `nor`   | `not`      | `indicator` |
+|-----|----------|---------|------------|-------------|
+| 3   | NAND_1_A | NOR_1_A | NOT_1_IN   | SIG1        |
+| 4   | NAND_1_B | NOR_1_B | NOT_1_OUT  | SIG2        |
+| 5   | NAND_1_Y | NOR_1_Y | NOT_2_IN   | SIG3        |
+| 6   | NAND_2_A | NOR_2_A | NOT_2_OUT  | SIG4        |
+| 7   | NAND_2_B | NOR_2_B | NOT_3_IN   | SIG5        |
+| 8   | NAND_2_Y | NOR_2_Y | NOT_3_OUT  | SIG6        |
+| 9   | NAND_3_A | NOR_3_A | NOT_4_IN   | SIG7        |
+| 10  | NAND_3_B | NOR_3_B | NOT_4_OUT  | SIG8        |
+| 11  | NAND_3_Y | NOR_3_Y | NOT_5_IN   | SIG9        |
+| 12  | NAND_4_A | NOR_4_A | NOT_5_OUT  | SIG10       |
+| 13  | NAND_4_B | NOR_4_B | NOT_6_IN   | SIG11       |
+| 14  | NAND_4_Y | NOR_4_Y | NOT_6_OUT  | SIG12       |
+
+The bus is positional: `J1` pin k ≡ `J2` pin k on every board. The indicator
+shield taps pins 3–14 as `SIG1..SIG12` and shows whatever a neighbouring board
+drives there.
 
 Supply: 5 V on the bus. The two header rows are 0.9" apart (row `a` to row `j`
 of one breadboard); columns b–e and f–i stay free for patch wires.
@@ -61,14 +80,15 @@ python3 -m venv venv
 3. Reopen in KiCad, nudge, route. Pour a GND zone on `B.Cu`. Run DRC.
 4. Plot Gerbers.
 
-Repeat with `indicator`.
+Repeat with `nor`, `not`, and `indicator` (each is its own KiCad project in its
+own `<target>_module/` folder).
 
 ### Fan-out
 
 A discrete gate output driving other **gate** inputs is limited by speed, not
 current (CMOS inputs are capacitive) — fine at this machine's speeds. One
-indicator-board channel adds roughly the BSS138 gate capacitance (~50 pF) to
-the net it watches; one indicator board on the bus is negligible.
+indicator-board channel adds roughly the AO3400A gate capacitance to the net it
+watches; one indicator board on the bus is negligible.
 
 ## Tests
 

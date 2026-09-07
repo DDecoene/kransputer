@@ -28,3 +28,24 @@ def test_unknown_target_exits_nonzero(tmp_path):
     r = _run(["bogus"], tmp_path)
     assert r.returncode != 0
     assert "unknown target" in (r.stderr + r.stdout)
+
+
+def test_no_argument_builds_nor_and_not(tmp_path):
+    r = _run([], tmp_path)
+    assert r.returncode == 0, r.stderr
+    assert (tmp_path / "nor_module.net").exists()
+    assert (tmp_path / "not_module.net").exists()
+
+
+def test_explicit_nor_target_only(tmp_path):
+    r = _run(["nor"], tmp_path)
+    assert r.returncode == 0, r.stderr
+    assert (tmp_path / "nor_module.net").exists()
+    assert not (tmp_path / "nand_module.net").exists()
+
+
+def test_explicit_not_target_only(tmp_path):
+    r = _run(["not"], tmp_path)
+    assert r.returncode == 0, r.stderr
+    assert (tmp_path / "not_module.net").exists()
+    assert not (tmp_path / "nand_module.net").exists()
