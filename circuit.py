@@ -106,47 +106,49 @@ def nand_gate(n, a, b, y, vdd, gnd):
     gnd += qnb["S"]
 
 
-# Preserved from baseline commit bf6a3a1 for the future NOR / NOT module specs.
-# These still use the pre-bus-module signature (va, vb, vout, ...) and no
-# semantic refs; rewrite them like nand_gate when those specs are implemented.
-# Not wired by any build() below.
+@subcircuit
+def nor_gate(n, a, b, y, vdd, gnd):
+    """Discrete static-CMOS 2-input NOR gate `n` (1..4).
+
+    The whole board is NOR, so refs drop the redundant prefix: QPA<n>/QPB<n> are
+    the series AO3401A pull-up through internal node NOR_<n>_MID, QNA<n>/QNB<n>
+    the parallel AO3400A pull-down.
+    """
+    qpa = Part("Transistor_FET", FET_P, ref=f"QPA{n}", footprint=FP_SOT23)
+    qpb = Part("Transistor_FET", FET_P, ref=f"QPB{n}", footprint=FP_SOT23)
+    qna = Part("Transistor_FET", FET_N, ref=f"QNA{n}", footprint=FP_SOT23)
+    qnb = Part("Transistor_FET", FET_N, ref=f"QNB{n}", footprint=FP_SOT23)
+    mid = Net(f"NOR_{n}_MID")
+
+    a   += qpa["G"], qna["G"]
+    b   += qpb["G"], qnb["G"]
+    vdd += qpa["S"]
+    mid += qpa["D"], qpb["S"]
+    y   += qpb["D"], qna["D"], qnb["D"]
+    gnd += qna["S"], qnb["S"]
 
 
 @subcircuit
-def nor_gate(va, vb, vout, vdd, gnd):
-    """Pure static-CMOS 2-input NOR gate."""
-    qp1 = Part("Transistor_FET", "BSS84",  footprint=FP_SOT23)
-    qp2 = Part("Transistor_FET", "BSS84",  footprint=FP_SOT23)
-    qn1 = Part("Transistor_FET", "BSS138", footprint=FP_SOT23)
-    qn2 = Part("Transistor_FET", "BSS138", footprint=FP_SOT23)
-    p_internal = Net()
+def not_gate(n, vin, vout, vdd, gnd):
+    """Discrete static-CMOS inverter `n` (1..6).
 
-    va.connect(qp1['G'], qn1['G'])
-    vb.connect(qp2['G'], qn2['G'])
+    QP<n> is the AO3401A pull-up, QN<n> the AO3400A pull-down; both gates driven
+    by NOT_<n>_IN, drains tied at NOT_<n>_OUT.
+    """
+    qp = Part("Transistor_FET", FET_P, ref=f"QP{n}", footprint=FP_SOT23)
+    qn = Part("Transistor_FET", FET_N, ref=f"QN{n}", footprint=FP_SOT23)
 
-    vdd.connect(qp1['S'])
-    p_internal.connect(qp1['D'], qp2['S'])
-
-    gnd.connect(qn1['S'], qn2['S'])
-    vout.connect(qp2['D'], qn1['D'], qn2['D'])
-
-
-@subcircuit
-def inverter(vin, vout, vdd, gnd):
-    """Pure static-CMOS inverter (NOT gate)."""
-    q_p = Part("Transistor_FET", "BSS84",  footprint=FP_SOT23)
-    q_n = Part("Transistor_FET", "BSS138", footprint=FP_SOT23)
-
-    vin.connect(q_p['G'], q_n['G'])
-    vdd.connect(q_p['S'])
-    gnd.connect(q_n['S'])
-    vout.connect(q_p['D'], q_n['D'])
+    vin  += qp["G"], qn["G"]
+    vdd  += qp["S"]
+    gnd  += qn["S"]
+    vout += qp["D"], qn["D"]
 
 
 # ---- Board assemblies ----------------------------------------------------
 
 
 NAND_SIGNALS = [f"NAND_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
+NOR_SIGNALS = [f"NOR_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
 
 
 def _nets_from_names(names):
@@ -183,6 +185,33 @@ def assemble_nand_module():
 def build_nand_module():
     assemble_nand_module()
     generate_netlist(file_="nand_module.net", do_backup=False)
+
+
+# ---- NOR board --------------------------------------------------------------
+
+
+def assemble_nor_module():
+    """4x nor_gate + bulk cap + bus headers. Operates on the default circuit."""
+    vdd, gnd = Net("VDD"), Net("GND")
+    vdd.drive = POWER
+    gnd.drive = POWER
+    sig = _nets_from_names(NOR_SIGNALS)
+    nets = {"VDD": vdd, "GND": gnd, **sig}
+
+    for n in range(1, 5):
+        nor_gate(
+            n,
+            sig[f"NOR_{n}_A"], sig[f"NOR_{n}_B"], sig[f"NOR_{n}_Y"],
+            vdd, gnd,
+        )
+
+    _bulk_cap(vdd, gnd)
+    add_bus_headers(nets, NOR_SIGNALS)
+
+
+def build_nor_module():
+    assemble_nor_module()
+    generate_netlist(file_="nor_module.net", do_backup=False)
 
 
 # ---- Indicator board ----------------------------------------------------
@@ -251,6 +280,7 @@ def build_indicator_module():
 BUILDERS = {
     "nand": build_nand_module,
     "indicator": build_indicator_module,
+    "nor": build_nor_module,
 }
 
 
