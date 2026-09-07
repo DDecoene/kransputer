@@ -25,6 +25,7 @@ Y_TOP        = 20.0                 # Y of the top header (J1)
 ROW_SPACING  = 22.86               # 0.9" -> row a to row j of one breadboard
 Y_BOT        = Y_TOP + ROW_SPACING  # Y of the bottom header (J2)
 GATE_PITCH   = 9.5                  # X distance between gate cells
+NOT_PITCH    = 6.0                  # X distance between the 6 inverter cells
 X_CENTER     = X0 + 7.5 * PITCH     # midpoint of the 16-pin header
 MARGIN_X_L   = 6.0                  # left board margin (houses C1 beside pin 1)
 MARGIN_X_R   = 3.0
@@ -33,9 +34,11 @@ MARGIN_Y     = 4.0
 Y_MID = (Y_TOP + Y_BOT) / 2.0
 
 
-def gate_x(n):
-    """Centre X of gate n (1..4), centred on the header."""
-    return X_CENTER + (n - 2.5) * GATE_PITCH
+def gate_x(n, count=4, pitch=None):
+    """Centre X of cell n (1..count), the row of cells centred on the header."""
+    if pitch is None:
+        pitch = GATE_PITCH
+    return X_CENTER + (n - (count + 1) / 2.0) * pitch
 
 
 def _vmm(x, y):
@@ -65,14 +68,15 @@ def _ref_text(by_ref, ref, dy_mm, size_mm=0.8):
 
 # ---- Per-board layouts -------------------------------------------------------
 
-def layout_nand(by_ref):
-    """4x nand_gate: 2x2 SOT-23 per gate, pull-up top row, pull-down bottom."""
+def _layout_2x2_gates(by_ref, count=4):
+    """`count` identical gates, 2x2 SOT-23 each: QPA/QPB top row (pull-up),
+    QNA/QNB bottom row (pull-down). Ref text parked in the central gap."""
     placed = set()
     y_up = Y_TOP + 7.0
     y_dn = Y_BOT - 7.0
     dx = 2.6
-    for n in range(1, 5):
-        gx = gate_x(n)
+    for n in range(1, count + 1):
+        gx = gate_x(n, count)
         cells = {
             f"QPA{n}": (gx - dx, y_up),
             f"QPB{n}": (gx + dx, y_up),
@@ -93,26 +97,60 @@ def layout_nand(by_ref):
     return placed
 
 
+def layout_nand(by_ref):
+    """4x nand_gate: 2x2 SOT-23 per gate, pull-up top row, pull-down bottom."""
+    return _layout_2x2_gates(by_ref, count=4)
+
+
+def layout_nor(by_ref):
+    """4x nor_gate: identical 2x2 geometry to NAND (QPA/QPB/QNA/QNB per gate)."""
+    return _layout_2x2_gates(by_ref, count=4)
+
+
 def layout_indicator(by_ref):
-    """4 gates: RN array on top, then LED|FET rows for A, B, Y."""
+    """4 groups: RN array on top, then LED|FET rows for the 3 SIG channels.
+
+    Refs use the running 1..12 index i = (g - 1) * 3 + c: LEDs D<i>, buffer
+    FETs Q<i>, array RN<g>.
+    """
     placed = set()
     row_y = [Y_TOP + 9.0, Y_TOP + 13.5, Y_TOP + 18.0]
     dx = 2.4
-    for n in range(1, 5):
-        gx = gate_x(n)
-        if _put(by_ref, f"RN{n}", gx, Y_TOP + 4.5):
-            placed.add(f"RN{n}")
-        for c, pin in enumerate(("A", "B", "Y")):
-            if _put(by_ref, f"{pin}{n}", gx - dx, row_y[c]):
-                placed.add(f"{pin}{n}")
-            if _put(by_ref, f"Q{pin}{n}", gx + dx, row_y[c]):
-                placed.add(f"Q{pin}{n}")
+    for g in range(1, 5):
+        gx = gate_x(g)
+        if _put(by_ref, f"RN{g}", gx, Y_TOP + 4.5):
+            placed.add(f"RN{g}")
+        for c in range(3):
+            i = (g - 1) * 3 + c + 1
+            if _put(by_ref, f"D{i}", gx - dx, row_y[c]):
+                placed.add(f"D{i}")
+            if _put(by_ref, f"Q{i}", gx + dx, row_y[c]):
+                placed.add(f"Q{i}")
     if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
         placed.add("C1")
     return placed
 
 
-LAYOUTS = {"nand": layout_nand, "indicator": layout_indicator}
+def layout_not(by_ref):
+    """6x not_gate: one column per inverter, QP<n> top row, QN<n> bottom row."""
+    placed = set()
+    y_up = Y_TOP + 7.0
+    y_dn = Y_BOT - 7.0
+    for n in range(1, 7):
+        gx = gate_x(n, count=6, pitch=NOT_PITCH)
+        if _put(by_ref, f"QP{n}", gx, y_up):
+            placed.add(f"QP{n}")
+        if _put(by_ref, f"QN{n}", gx, y_dn):
+            placed.add(f"QN{n}")
+        _ref_text(by_ref, f"QP{n}", 2.6)
+        _ref_text(by_ref, f"QN{n}", -2.6)
+    if _put(by_ref, "C1", X0 - 4.5, Y_MID, rot=90.0):
+        placed.add("C1")
+    return placed
+
+
+LAYOUTS = {"nand": layout_nand, "indicator": layout_indicator,
+           "nor": layout_nor, "not": layout_not}
 
 
 # ---- Edge.Cuts ------------------------------------------------------------
