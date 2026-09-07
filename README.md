@@ -116,6 +116,11 @@ python3 -m venv venv
 ./venv/bin/python circuit.py nand        # or just one
 ```
 
+`kicad_env.py` finds the KiCad symbol libraries at the macOS bundle path
+(`/Applications/KiCad/KiCad.app/...`). On Linux or Windows, set the
+`KICAD*_SYMBOL_DIR` / `KICAD*_FOOTPRINT_DIR` environment variables to your
+install's library paths before running, or adjust `kicad_env.py`.
+
 1. Turn the netlist into a board. Either open a new PCB project `nand_module/`
    in KiCad and "Update PCB from Netlist", or run `kinet2pcb` headless (needs
    `skidl`, `kinparse` and `pcbnew` on the *same* Python — i.e. installed into
@@ -164,3 +169,11 @@ eyeball in KiCad.
 - `kicad_env.py`— points SKiDL at the bundled KiCad libraries on macOS
 - `SYMBOLS.md`  — resolved KiCad symbols (AO3400A/AO3401A, LED, R array, header)
 - `tests/`      — SKiDL-netlist topology checks per board + CLI + place integration
+
+## Licence
+
+[PolyForm Noncommercial License 1.0.0](LICENSE). Build it, study it, modify it,
+teach with it, and contribute — freely, for any noncommercial purpose. Selling
+kits, boards, or hardware based on this work is reserved to the maintainer; see
+[COMMERCIAL.md](COMMERCIAL.md). Contribution terms are in
+[CONTRIBUTING.md](CONTRIBUTING.md).
