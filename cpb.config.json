@@ -1,6 +1,6 @@
 {
   "output": {
-    "directory": "./cpb-output",
+    "directory": "./out",
     "filename": "kransputer_bundle.txt",
     "timestamped": true
   },
@@ -21,7 +21,7 @@
         ".ruff_cache",
         ".history",
         ".claude",
-        "cpb-output",
+        "out",
         "fab",
         "*-backups"
       ],

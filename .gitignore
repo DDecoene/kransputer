@@ -30,4 +30,4 @@ _autosave-*
 *_fab.zip
 
 # claude-project-bundler output
-cpb-output/
+out/
