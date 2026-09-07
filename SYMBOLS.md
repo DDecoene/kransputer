@@ -1,15 +1,21 @@
 # Resolved KiCad symbols and footprints
 
-Verified 2026-09-06 against KiCad 10.0.6 bundled libraries.
+Verified 2026-09-06 against KiCad 10.0.6 bundled libraries; AO parts added
+2026-09-07.
 
 ## Transistors
 
-| Part   | Symbol                  | Footprint                     | Pins (num, name)        |
-|--------|-------------------------|-------------------------------|-------------------------|
-| BSS84  | `Transistor_FET:BSS84`  | `Package_TO_SOT_SMD:SOT-23`   | 1=G, 2=S, 3=D           |
-| BSS138 | `Transistor_FET:BSS138` | `Package_TO_SOT_SMD:SOT-23`   | 1=G, 2=S, 3=D           |
+| Part    | Symbol                    | Footprint                   | Pins (num, name) |
+|---------|---------------------------|-----------------------------|------------------|
+| AO3401A | `Transistor_FET:AO3401A`  | `Package_TO_SOT_SMD:SOT-23` | 1=G, 2=S, 3=D    |
+| AO3400A | `Transistor_FET:AO3400A`  | `Package_TO_SOT_SMD:SOT-23` | 1=G, 2=S, 3=D    |
 
-`value` is `"BSS84"` / `"BSS138"` out of the symbol; do not pass `value=`.
+`AO3401A` (P-channel, `FET_P` in `circuit.py`) `extends TP0610T`; `AO3400A`
+(N-channel, `FET_N`) `extends Q_NMOS_GSD`. Both resolve to pin 1=G, 2=S, 3=D,
+matching the SOT-23 footprint — identical to the BSS84/BSS138 they replaced, so
+the `part["G"/"S"/"D"]` name lookups are unchanged.
+
+`value` is `"AO3401A"` / `"AO3400A"` out of the symbol; do not pass `value=`.
 
 ## LED
 
@@ -18,14 +24,14 @@ Verified 2026-09-06 against KiCad 10.0.6 bundled libraries.
 ## LED series resistor array (indicator board)
 
 **There is no 3x resistor-array footprint in KiCad 10.** Nearest is `4x0603`.
-So the indicator board uses one **4-element** array per gate, with the 4th
-resistor unused (both pins tied to GND — no current, no floating-pad DRC).
+So the indicator board uses one **4-element** array per group of 3 channels, with
+the 4th resistor unused (both pins tied to GND — no current, no floating-pad DRC).
 
 - Footprint: `Resistor_SMD:R_Array_Convex_4x0603` (8 pads)
 - Symbol:    `Device:R_Pack04` (8 pins, 4 isolated resistors)
 - Pin map: R1 = 1 & 8, R2 = 2 & 7, R3 = 3 & 6, R4 = 4 & 5
 - LED-anode side = pads 1/2/3 (one physical edge), VDD side = pads 8/7/6
-- `_RARRAY_PAIRS = [("1", "8"), ("2", "7"), ("3", "6")]`  (A, B, Y)
+- `_RARRAY_PAIRS = [("1", "8"), ("2", "7"), ("3", "6")]`  (the 3 channels of the group)
 - Spare: `("4", "5")` both to GND
 
 ## 16-pin bus header

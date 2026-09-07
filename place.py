@@ -8,7 +8,7 @@ short mostly-vertical ratsnest -> easy to autoroute afterwards.
 
 Run with KiCad's bundled Python (pcbnew is not in the project venv):
   /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
-      place.py [nand|indicator] [board.kicad_pcb]
+      place.py [nand|nor|not|indicator] [board.kicad_pcb]
 
 With no board path it uses <target>_module/<target>_module.kicad_pcb under the
 current directory.

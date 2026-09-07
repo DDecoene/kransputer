@@ -116,22 +116,28 @@ python3 -m venv venv
 ./venv/bin/python circuit.py nand        # or just one
 ```
 
-1. In KiCad: new PCB project `nand_module/`, import `nand_module.net`, save,
-   close the board.
+1. Turn the netlist into a board. Either open a new PCB project `nand_module/`
+   in KiCad and "Update PCB from Netlist", or run `kinet2pcb` headless (needs
+   `skidl`, `kinparse` and `pcbnew` on the *same* Python — i.e. installed into
+   KiCad's bundled Python, since `pcbnew` is not in the venv):
+   ```bash
+   kinet2pcb -i nand_module.net -o nand_module/nand_module.kicad_pcb -w --overwrite
+   ```
 2. Rough auto-placement — run from the folder that contains `nand_module/`,
-   using KiCad's bundled Python (pcbnew is not in the venv):
+   using KiCad's bundled Python:
    ```bash
    /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
        place.py nand
    ```
-   `place.py` positions J1/J2 on opposite edges, clusters each gate between
-   them, and draws a tight `Edge.Cuts` rectangle. Pass an explicit
-   `.kicad_pcb` path as a second argument to place a board elsewhere.
-3. Reopen in KiCad, nudge, route. Pour a GND zone on `B.Cu`. Run DRC.
+   `place.py` positions J1/J2 on opposite 0.9" edges, clusters each gate between
+   them, draws a tight `Edge.Cuts` rectangle and pours a `B.Cu` GND zone. Pass an
+   explicit `.kicad_pcb` path as a second argument to place a board elsewhere.
+3. Reopen in KiCad, nudge, route. Re-fill the GND zone. Run DRC.
 4. Plot Gerbers.
 
 Repeat with `nor`, `not`, and `indicator` (each is its own KiCad project in its
-own `<target>_module/` folder).
+own `<target>_module/` folder). `nand_module/`, `nor_module/`, `not_module/` and
+`indicator_module/` are checked in.
 
 ### Fan-out
 
@@ -154,6 +160,7 @@ eyeball in KiCad.
 ## Layout
 
 - `circuit.py`  — SKiDL netlist generator (all boards, no arg = build every one)
-- `place.py`    — pcbnew layout: exact positions per board type + Edge.Cuts
+- `place.py`    — pcbnew layout: exact positions per board type, Edge.Cuts, GND pour
 - `kicad_env.py`— points SKiDL at the bundled KiCad libraries on macOS
-- `SYMBOLS.md`  — resolved KiCad symbols and the resistor-array pin map
+- `SYMBOLS.md`  — resolved KiCad symbols (AO3400A/AO3401A, LED, R array, header)
+- `tests/`      — SKiDL-netlist topology checks per board + CLI + place integration
