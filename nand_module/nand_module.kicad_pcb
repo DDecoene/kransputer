@@ -3398,7 +3398,7 @@
 				)
 			)
 		)
-		(property "Value" "BUS_B"
+		(property "Value" "BUS_STACK_1x16"
 			(at 0 40.48 90)
 			(layer "F.Fab")
 			(uuid "ff1711bc-a4e0-4e62-acf5-6e2a72a466b2")
@@ -5727,7 +5727,7 @@
 				)
 			)
 		)
-		(property "Value" "BUS_A"
+		(property "Value" "BUS_STACK_1x16"
 			(at 0 40.48 90)
 			(layer "F.Fab")
 			(uuid "95cd9122-5bfb-4291-8a27-b3d7a8c8660d")
