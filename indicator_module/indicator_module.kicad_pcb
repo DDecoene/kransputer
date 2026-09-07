@@ -1161,7 +1161,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "0f5abcb5-a518-4116-8e9a-8248fd050fb3")
@@ -1527,7 +1527,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "fa320f4a-ee20-4bff-b92f-52247eebce36")
@@ -2324,7 +2324,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "51b4987f-f0d3-44c1-81ca-eeb0d4b0be8a")
@@ -2690,7 +2690,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "11610e30-5a34-4876-a31e-e362f3817925")
@@ -3056,7 +3056,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "5b0137a2-4da2-49d6-8947-5c0480e8a746")
@@ -3422,7 +3422,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "b4e84e82-a048-482a-b103-13be393527e0")
@@ -4365,7 +4365,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "be726c61-1815-4335-960a-1e34f2c179db")
@@ -4926,7 +4926,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "8cc1d700-a960-41d8-a292-9566de439be7")
@@ -5877,7 +5877,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "af944137-eab5-4eaa-b7d6-a9a7a253ae36")
@@ -6243,7 +6243,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "0457ad3e-3e6e-4198-aaaa-25ab0ddc6d0a")
@@ -7547,7 +7547,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "ac4f011c-b6f8-40e9-a3ca-1e0f0d991564")
@@ -7913,7 +7913,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "94d42959-ddd0-41f5-80b5-b2312b7426f3")

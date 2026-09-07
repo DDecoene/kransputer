@@ -104,7 +104,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "24f085ab-9a97-46aa-9d22-51f53187c159")
@@ -470,7 +470,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "18603369-b5fd-4d89-a087-ea8ee24cdbde")
@@ -836,7 +836,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "0e0a9046-2747-4ea7-acbb-65d08c010d8e")
@@ -1202,7 +1202,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "3595fb3a-b411-4eea-a6b2-e7b555df5686")
@@ -1568,7 +1568,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "c90db037-0d2f-4bab-bd92-a9d7462484c6")
@@ -1934,7 +1934,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "23a8f4be-fdfc-44f9-8f46-7e69d90082e0")
@@ -2300,7 +2300,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "1ec158a2-29ca-489d-a8b7-e716a837bde3")
@@ -2666,7 +2666,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "1f135629-7239-4629-b0cf-4f0d55fe33f5")
@@ -3032,7 +3032,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "71dc041c-b689-4d1d-b7f8-2656762712b6")
@@ -3751,7 +3751,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "9dec95a9-04e6-4e86-acdb-1d84b6e18ee5")
@@ -4117,7 +4117,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "ecf598ea-4070-4b4e-898f-ee5a2b581897")
@@ -4483,7 +4483,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS138"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "9c50e6bf-cb66-4b65-b6aa-45ef51f8152f")
@@ -4995,7 +4995,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "620bdbee-223b-4821-90e6-22daede0f1fc")
@@ -5361,7 +5361,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "51d274b4-e2d8-46ba-b403-f4bace90bd70")
@@ -6080,7 +6080,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "a8672b82-47ef-4b81-8337-d343f1782add")
@@ -6446,7 +6446,7 @@
 				)
 			)
 		)
-		(property "Value" "BSS84"
+		(property "Value" "AO3401A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "86ed05b7-4751-4250-8aff-eb5eb60d6db9")
