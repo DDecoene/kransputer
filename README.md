@@ -28,25 +28,35 @@ memory. That is why the ring is the point, not an afterthought.
 
 ## How it gets built — from the ground up
 
-The architecture is settled: the same SUBLEQ core and message-passing ring
-already worked out as a Python model. What changes is the direction of the work.
-Instead of proving the whole machine in Verilog and on an FPGA before touching a
-soldering iron, Kransputer is built upward from real gates, one module at a time,
-with the emulator kept alongside as the reference every physical block has to
-match.
+The architecture is settled on paper: a SUBLEQ core with a serial datapath and
+SPI links, meant to grow into a message-passing ring. What is deliberate is the
+direction of the work. Instead of proving the whole machine on an FPGA before
+touching a soldering iron, Kransputer is built upward from real gates, one
+module at a time.
 
 1. **Gates** — small PCBs, each a fistful of MOSFETs forming one logic function
    (NAND, NOR, NOT …), that plug into a breadboard and share a common bus. This
-   is the layer being built now.
+   is the layer built so far.
 2. **Blocks** — those gates wired into the units the design calls for: the serial
    adder that is the whole ALU, the registers, the subleq sequencer and bit
    counter, the SPI interface to memory, the four-wire link to the next core.
+   Each block is first modelled in structural Verilog — gate for gate, built
+   from the same NAND/NOR/NOT cells as the boards — and checked in simulation,
+   then built physically on breadboards.
 3. **A core** — one complete processor, assembled from the blocks.
 4. **A ring** — the core replicated and connected: two, then four, then eight,
    blocking on the links for synchronisation.
 
-At every step the hardware is checked against the emulator: same program in, same
-answer out, or the block is wrong.
+The structural model is the reference: the same stimulus into the simulation and
+into the breadboard must give the same result, or the block is wrong.
+
+## Status
+
+The gate boards are drawn but **not yet routed** — schematics and rough
+placement are done, copper is not. Work right now is on the first blocks in
+structural Verilog, which land here soon. Once those hold up in simulation the
+boards get routed and finished for a first self-ordered run, with build notes
+and other material alongside.
 
 ## This repository
 
