@@ -45,33 +45,38 @@ FET_P = "AO3401A"   # P-channel  (was BSS84)
 LED_R  = "1k"   # LED series resistor on the indicator board (2k2 = softer)
 BULK_C = "1u"   # per-board bulk decoupling
 
-# ---- Bus ------------------------------------------------------------------
-# Pin k (1-based) carries BUS[k - 1]. Both edge headers use this map 1:1, so
-# any signal is reachable from either edge.
-BUS = [
-    "VDD", "GND",
-    "NAND_1_A", "NAND_1_B", "NAND_1_Y",
-    "NAND_2_A", "NAND_2_B", "NAND_2_Y",
-    "NAND_3_A", "NAND_3_B", "NAND_3_Y",
-    "NAND_4_A", "NAND_4_B", "NAND_4_Y",
-    "BUS_X", "BUS_Y",          # spare bus lines, edge-to-edge only
-]
+# ---- Bus ----------------------------------------------------------------
+# 16-pin pass-through bus, identical on both edge headers (J1 pin k == J2 pin k).
+# Framing is fixed: pin 1 = VDD, pin 2 = GND, pins 3..14 carry the 12 signal
+# nets a board supplies, pins 15/16 are the edge-to-edge spares.
+BUS_SPARES = ["BUS_X", "BUS_Y"]
 
 
-def add_bus_headers(nets):
+def bus_pinmap(signals):
+    """Full 16-entry bus net-name list for `signals` (exactly 12, pins 3..14)."""
+    if len(signals) != 12:
+        raise ValueError(f"bus needs 12 signal names, got {len(signals)}")
+    return ["VDD", "GND", *signals, *BUS_SPARES]
+
+
+def add_bus_headers(nets, signals):
     """Create edge headers J1/J2 and wire every pin to its bus net.
 
-    `nets` maps bus-net name -> Net; names not present get a fresh Net (used
-    for the spare BUS_X/BUS_Y lines on boards that do not drive them).
+    `signals` is the board's 12 signal net names in pin order (bus pins 3..14).
+    `nets` maps bus-net name -> Net; names not present get a fresh Net (used for
+    the spare BUS_X/BUS_Y lines on boards that do not drive them).
     Returns (j1, j2).
     """
-    for name in BUS:
+    pinmap = bus_pinmap(signals)
+    for name in pinmap:
         nets.setdefault(name, Net(name))
-    j1 = Part("Connector", "Conn_01x16_Pin", ref="J1", value="BUS_A",
+    # J1/J2 are stacking headers: male tails down into the breadboard, female
+    # sockets up for the indicator shield. Same 1x16 THT drill pattern.
+    j1 = Part("Connector", "Conn_01x16_Pin", ref="J1", value="BUS_STACK_1x16",
               footprint=FP_HDR16)
-    j2 = Part("Connector", "Conn_01x16_Pin", ref="J2", value="BUS_B",
+    j2 = Part("Connector", "Conn_01x16_Pin", ref="J2", value="BUS_STACK_1x16",
               footprint=FP_HDR16)
-    for k, name in enumerate(BUS, start=1):
+    for k, name in enumerate(pinmap, start=1):
         nets[name] += j1[k], j2[k]
     return j1, j2
 
@@ -141,14 +146,12 @@ def inverter(vin, vout, vdd, gnd):
 # ---- Board assemblies ----------------------------------------------------
 
 
-def _signal_nets():
-    """The 12 gate-signal nets, keyed by name."""
-    sig = {}
-    for n in range(1, 5):
-        for p in ("A", "B", "Y"):
-            name = f"NAND_{n}_{p}"
-            sig[name] = Net(name)
-    return sig
+NAND_SIGNALS = [f"NAND_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
+
+
+def _nets_from_names(names):
+    """{name: Net(name)} for every name in `names`."""
+    return {n: Net(n) for n in names}
 
 
 def _bulk_cap(vdd, gnd):
@@ -163,7 +166,7 @@ def assemble_nand_module():
     vdd, gnd = Net("VDD"), Net("GND")
     vdd.drive = POWER
     gnd.drive = POWER
-    sig = _signal_nets()
+    sig = _nets_from_names(NAND_SIGNALS)
     nets = {"VDD": vdd, "GND": gnd, **sig}
 
     for n in range(1, 5):
@@ -174,7 +177,7 @@ def assemble_nand_module():
         )
 
     _bulk_cap(vdd, gnd)
-    add_bus_headers(nets)
+    add_bus_headers(nets, NAND_SIGNALS)
 
 
 def build_nand_module():
@@ -224,7 +227,7 @@ def assemble_indicator_module():
     vdd, gnd = Net("VDD"), Net("GND")
     vdd.drive = POWER
     gnd.drive = POWER
-    sig = _signal_nets()
+    sig = _nets_from_names(NAND_SIGNALS)
     nets = {"VDD": vdd, "GND": gnd, **sig}
 
     for n in range(1, 5):
@@ -235,7 +238,7 @@ def assemble_indicator_module():
         )
 
     _bulk_cap(vdd, gnd)
-    add_bus_headers(nets)
+    add_bus_headers(nets, NAND_SIGNALS)
 
 
 def build_indicator_module():
