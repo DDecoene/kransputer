@@ -149,6 +149,7 @@ def not_gate(n, vin, vout, vdd, gnd):
 
 NAND_SIGNALS = [f"NAND_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
 NOR_SIGNALS = [f"NOR_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
+NOT_SIGNALS = [f"NOT_{n}_{p}" for n in range(1, 7) for p in ("IN", "OUT")]
 
 
 def _nets_from_names(names):
@@ -212,6 +213,33 @@ def assemble_nor_module():
 def build_nor_module():
     assemble_nor_module()
     generate_netlist(file_="nor_module.net", do_backup=False)
+
+
+# ---- NOT board --------------------------------------------------------------
+
+
+def assemble_not_module():
+    """6x not_gate + bulk cap + bus headers. Operates on the default circuit."""
+    vdd, gnd = Net("VDD"), Net("GND")
+    vdd.drive = POWER
+    gnd.drive = POWER
+    sig = _nets_from_names(NOT_SIGNALS)
+    nets = {"VDD": vdd, "GND": gnd, **sig}
+
+    for n in range(1, 7):
+        not_gate(
+            n,
+            sig[f"NOT_{n}_IN"], sig[f"NOT_{n}_OUT"],
+            vdd, gnd,
+        )
+
+    _bulk_cap(vdd, gnd)
+    add_bus_headers(nets, NOT_SIGNALS)
+
+
+def build_not_module():
+    assemble_not_module()
+    generate_netlist(file_="not_module.net", do_backup=False)
 
 
 # ---- Indicator board ----------------------------------------------------
@@ -281,6 +309,7 @@ BUILDERS = {
     "nand": build_nand_module,
     "indicator": build_indicator_module,
     "nor": build_nor_module,
+    "not": build_not_module,
 }
 
 
