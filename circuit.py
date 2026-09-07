@@ -150,6 +150,7 @@ def not_gate(n, vin, vout, vdd, gnd):
 NAND_SIGNALS = [f"NAND_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
 NOR_SIGNALS = [f"NOR_{n}_{p}" for n in range(1, 5) for p in ("A", "B", "Y")]
 NOT_SIGNALS = [f"NOT_{n}_{p}" for n in range(1, 7) for p in ("IN", "OUT")]
+INDICATOR_SIGNALS = [f"SIG{i}" for i in range(1, 13)]
 
 
 def _nets_from_names(names):
@@ -251,25 +252,24 @@ _RARRAY_SPARE = ("4", "5")
 
 
 @subcircuit
-def indicator_gate(n, sig_a, sig_b, sig_y, vdd, gnd):
-    """Three buffered LED indicators for gate `n`'s A/B/Y bus signals.
+def indicator_gate(g, sig_1, sig_2, sig_3, vdd, gnd):
+    """Three buffered LED indicators for bus group `g` (1..4).
 
-    Per channel a BSS138 in common source (gate = bus signal, high impedance,
+    Per channel an AO3400A in common source (gate = bus signal, high impedance,
     so the logic net is not loaded) sinks an LED whose anode is fed from VDD
-    through one element of the RN<n> array. LED lit = logic 1.
+    through one element of the RN<g> array. LED lit = logic 1.
 
-    Refs drop the redundant board name: LEDs A<n>/B<n>/Y<n>, buffer FETs
-    QA<n>/QB<n>/QY<n>, array RN<n>.
+    Refs use a running 1..12 index i = (g - 1) * 3 + c: buffer FETs Q<i>, LEDs
+    D<i>, resistor array RN<g>.
     """
-    rn = Part("Device", "R_Pack04", ref=f"RN{n}", value=LED_R,
+    rn = Part("Device", "R_Pack04", ref=f"RN{g}", value=LED_R,
               footprint=FP_RARRAY)
-    for (led_pin, vdd_pin), pin, signal in zip(
-        _RARRAY_PAIRS, ("A", "B", "Y"), (sig_a, sig_b, sig_y)
+    for (led_pin, vdd_pin), c, signal in zip(
+        _RARRAY_PAIRS, (1, 2, 3), (sig_1, sig_2, sig_3)
     ):
-        q = Part("Transistor_FET", "BSS138", ref=f"Q{pin}{n}",
-                 footprint=FP_SOT23)
-        d = Part("Device", "LED", ref=f"{pin}{n}", value=f"{pin}{n}",
-                 footprint=FP_LED)
+        i = (g - 1) * 3 + c
+        q = Part("Transistor_FET", FET_N, ref=f"Q{i}", footprint=FP_SOT23)
+        d = Part("Device", "LED", ref=f"D{i}", value=f"D{i}", footprint=FP_LED)
         vdd    += rn[vdd_pin]
         gnd    += q["S"]
         signal += q["G"]
@@ -280,22 +280,23 @@ def indicator_gate(n, sig_a, sig_b, sig_y, vdd, gnd):
 
 
 def assemble_indicator_module():
-    """12 buffered LEDs (4 gates x A/B/Y) + bulk cap + bus headers."""
+    """12 buffered LEDs (4 groups x 3 SIG channels) + bulk cap + bus headers."""
     vdd, gnd = Net("VDD"), Net("GND")
     vdd.drive = POWER
     gnd.drive = POWER
-    sig = _nets_from_names(NAND_SIGNALS)
+    sig = _nets_from_names(INDICATOR_SIGNALS)
     nets = {"VDD": vdd, "GND": gnd, **sig}
 
-    for n in range(1, 5):
+    for g in range(1, 5):
+        base = (g - 1) * 3
         indicator_gate(
-            n,
-            sig[f"NAND_{n}_A"], sig[f"NAND_{n}_B"], sig[f"NAND_{n}_Y"],
+            g,
+            sig[f"SIG{base + 1}"], sig[f"SIG{base + 2}"], sig[f"SIG{base + 3}"],
             vdd, gnd,
         )
 
     _bulk_cap(vdd, gnd)
-    add_bus_headers(nets, NAND_SIGNALS)
+    add_bus_headers(nets, INDICATOR_SIGNALS)
 
 
 def build_indicator_module():
