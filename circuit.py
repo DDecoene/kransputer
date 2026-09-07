@@ -6,7 +6,9 @@ pass-through bus on two opposite edge headers.
 
 TARGET (or argv[1]) selects the board:
   nand       4x discrete static-CMOS 2-input NAND gate
-  indicator  12-channel buffered bus LED indicator
+  nor        4x discrete static-CMOS 2-input NOR gate
+  not        6x discrete static-CMOS inverter
+  indicator  12-channel buffered bus LED indicator (generic SIG1..SIG12 taps)
 
 Output: <target>_module.net
 """
