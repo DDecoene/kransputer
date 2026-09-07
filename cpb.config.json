@@ -48,6 +48,7 @@
       "extensions": [
         ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico",
         ".pdf", ".zip", ".tar", ".gz",
+        ".kicad_pcb",
         ".drl", ".gbr", ".gbl", ".gtl", ".gto", ".gbo", ".gts", ".gbs", ".gtp", ".gm1", ".gbrjob"
       ],
       "maxSize": 2097152
