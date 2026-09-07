@@ -1,9 +1,59 @@
 # kransputer
 
-Discrete-logic building blocks for the kransputer. Each module is a small PCB
-that plugs into a breadboard on two opposite edge headers carrying an identical
-16-pin pass-through bus, so modules can sit side by side across one or more
-breadboards and be wired together into larger logic.
+## What Kransputer is
+
+Kransputer is a working computer built from a few thousand discrete CMOS
+transistors — a machine on the scale of an Intel 4004, but made of parts you can
+hold — designed to grow into a multiprocessor: one core, then a ring of up to
+eight, passing messages the way INMOS's Transputer did. It exists to be
+understood and rebuilt, by a person, a class or a hackerspace. Not to be sold.
+
+## Why it looks the way it does
+
+One decision forces everything else: CMOS. Almost every discrete-transistor
+computer ever built is NMOS and burns about a watt standing still. CMOS costs
+twice the transistors but makes power scale with clock rate instead — turn the
+clock down and the machine sips. Staying inside a small transistor budget is why
+the design is stripped to the bone:
+
+- **One instruction** — subleq only, so there is no decoder. The instruction set
+  lives in the assembler as macros.
+- **A few bits at a time** — a serial datapath, so the arithmetic unit is a
+  handful of adders. You pay in clock cycles, which are cheap.
+- **No bus** — memory, display and input all speak SPI over four wires. No
+  address bus, no data bus.
+
+On this machine, talking to the core next door is cheaper than reading your own
+memory. That is why the ring is the point, not an afterthought.
+
+## How it gets built — from the ground up
+
+The architecture is settled: the same SUBLEQ core and message-passing ring
+already worked out as a Python model. What changes is the direction of the work.
+Instead of proving the whole machine in Verilog and on an FPGA before touching a
+soldering iron, Kransputer is built upward from real gates, one module at a time,
+with the emulator kept alongside as the reference every physical block has to
+match.
+
+1. **Gates** — small PCBs, each a fistful of MOSFETs forming one logic function
+   (NAND, NOR, NOT …), that plug into a breadboard and share a common bus. This
+   is the layer being built now.
+2. **Blocks** — those gates wired into the units the design calls for: the serial
+   adder that is the whole ALU, the registers, the subleq sequencer and bit
+   counter, the SPI interface to memory, the four-wire link to the next core.
+3. **A core** — one complete processor, assembled from the blocks.
+4. **A ring** — the core replicated and connected: two, then four, then eight,
+   blocking on the links for synchronisation.
+
+At every step the hardware is checked against the emulator: same program in, same
+answer out, or the block is wrong.
+
+## This repository
+
+Discrete-logic building blocks for the kransputer — the **Gates** layer above.
+Each module is a small PCB that plugs into a breadboard on two opposite edge
+headers carrying an identical 16-pin pass-through bus, so modules can sit side by
+side across one or more breadboards and be wired together into larger logic.
 
 ## Boards
 
