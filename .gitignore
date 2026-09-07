@@ -28,3 +28,6 @@ _autosave-*
 # Fab output (regenerate with kicad-cli)
 */fab/
 *_fab.zip
+
+# claude-project-bundler output
+cpb-output/

@@ -1,0 +1,62 @@
+{
+  "output": {
+    "directory": "./cpb-output",
+    "filename": "kransputer_bundle.txt",
+    "timestamped": true
+  },
+  "files": {
+    "include": {
+      "code": [".py", ".sh"],
+      "docs": [".md", ".txt", ".rst", ".adoc"],
+      "config": [".ini", ".toml", ".cfg", ".json", ".yml", ".yaml"],
+      "hardware": [".kicad_pcb", ".kicad_pro", ".kicad_sch"],
+      "data": [".csv", ".svg"]
+    },
+    "exclude": {
+      "directories": [
+        "venv",
+        "__pycache__",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        ".history",
+        ".claude",
+        "cpb-output",
+        "fab",
+        "*-backups"
+      ],
+      "files": [
+        ".DS_Store",
+        "fp-info-cache"
+      ],
+      "patterns": [
+        "*.pyc",
+        "*_sklib.py",
+        "*.net",
+        "*.erc",
+        "*.log",
+        "*.kicad_prl",
+        "*.kicad_pcb-bak",
+        "*.kicad_sch-bak",
+        "~*.lck",
+        "_autosave-*",
+        "*.bak",
+        "*_fab.zip"
+      ]
+    },
+    "binary": {
+      "extensions": [
+        ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico",
+        ".pdf", ".zip", ".tar", ".gz",
+        ".drl", ".gbr", ".gbl", ".gtl", ".gto", ".gbo", ".gts", ".gbs", ".gtp", ".gm1", ".gbrjob"
+      ],
+      "maxSize": 2097152
+    }
+  },
+  "project": {
+    "mainFiles": ["README.md", "SYMBOLS.md", "circuit.py"],
+    "typeRules": {
+      "python": ["requirements.txt"]
+    }
+  }
+}
