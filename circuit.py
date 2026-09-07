@@ -35,6 +35,12 @@ FP_CAP    = "Capacitor_SMD:C_0805_2012Metric"
 FP_HDR16  = "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical"
 FP_RARRAY = "Resistor_SMD:R_Array_Convex_4x0603"
 
+# ---- Default MOSFETs -----------------------------------------------------
+# Static-CMOS logic FETs. AO3400A / AO3401A are drop-in for BSS138 / BSS84:
+# same Transistor_FET base symbols (pin 1=G, 2=S, 3=D) and SOT-23 footprint.
+FET_N = "AO3400A"   # N-channel  (was BSS138)
+FET_P = "AO3401A"   # P-channel  (was BSS84)
+
 # ---- Values ----------------------------------------------------------------
 LED_R  = "1k"   # LED series resistor on the indicator board (2k2 = softer)
 BULK_C = "1u"   # per-board bulk decoupling
@@ -78,13 +84,13 @@ def nand_gate(n, a, b, y, vdd, gnd):
     """Discrete static-CMOS 2-input NAND gate `n` (1..4).
 
     The whole board is NAND, so refs drop the redundant prefix: QPA<n>/QPB<n>
-    are the parallel BSS84 pull-up, QNA<n>/QNB<n> the series BSS138 pull-down
+    are the parallel AO3401A pull-up, QNA<n>/QNB<n> the series AO3400A pull-down
     through internal node NAND_<n>_MID.
     """
-    qpa = Part("Transistor_FET", "BSS84",  ref=f"QPA{n}", footprint=FP_SOT23)
-    qpb = Part("Transistor_FET", "BSS84",  ref=f"QPB{n}", footprint=FP_SOT23)
-    qna = Part("Transistor_FET", "BSS138", ref=f"QNA{n}", footprint=FP_SOT23)
-    qnb = Part("Transistor_FET", "BSS138", ref=f"QNB{n}", footprint=FP_SOT23)
+    qpa = Part("Transistor_FET", FET_P, ref=f"QPA{n}", footprint=FP_SOT23)
+    qpb = Part("Transistor_FET", FET_P, ref=f"QPB{n}", footprint=FP_SOT23)
+    qna = Part("Transistor_FET", FET_N, ref=f"QNA{n}", footprint=FP_SOT23)
+    qnb = Part("Transistor_FET", FET_N, ref=f"QNB{n}", footprint=FP_SOT23)
     mid = Net(f"NAND_{n}_MID")
 
     a   += qpa["G"], qna["G"]
